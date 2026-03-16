@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>200 Phrasal Verbs — Flashcard Master</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f5f0e8;
+  --surface: #fffdf7;
+  --card-a: #1a1a2e;
+  --card-b: #16213e;
+  --ink: #1a1a2e;
+  --ink2: #4a4a6a;
+  --ink3: #8888aa;
+  --gold: #c9a84c;
+  --gold2: #e8c878;
+  --teal: #2dd4bf;
+  --rose: #fb7185;
+  --amber: #fbbf24;
+  --border: rgba(26,26,46,0.08);
+  --shadow: 0 4px 24px rgba(26,26,46,0.10);
+  --shadow-lg: 0 12px 48px rgba(26,26,46,0.18);
+}
+
+- { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior: smooth; }
+
+body {
+font-family: ‘Outfit’, sans-serif;
+background: var(–bg);
+color: var(–ink);
+min-height: 100vh;
+}
+
+/* Grain texture overlay */
+body::after {
+content: ‘’;
+position: fixed; inset: 0;
+background-image: url(“data:image/svg+xml,%3Csvg viewBox=‘0 0 256 256’ xmlns=‘http://www.w3.org/2000/svg’%3E%3Cfilter id=‘noise’%3E%3CfeTurbulence type=‘fractalNoise’ baseFrequency=‘0.9’ numOctaves=‘4’ stitchTiles=‘stitch’/%3E%3C/filter%3E%3Crect width=‘100%25’ height=‘100%25’ filter=‘url(%23noise)’ opacity=‘0.04’/%3E%3C/svg%3E”);
+pointer-events: none; z-index: 999; opacity: 0.4;
+}
+
+/* ─── Layout ─── */
+.app { display: flex; min-height: 100vh; }
+
+.sidebar {
+width: 280px; flex-shrink: 0;
+background: var(–card-a);
+padding: 32px 0;
+position: sticky; top: 0; height: 100vh;
+overflow-y: auto;
+display: flex; flex-direction: column;
+}
+
+.sidebar::-webkit-scrollbar { width: 4px; }
+.sidebar::-webkit-scrollbar-track { background: transparent; }
+.sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+
+.logo {
+padding: 0 28px 32px;
+border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.logo-tag {
+font-size: 10px; font-weight: 700; letter-spacing: 4px;
+color: var(–gold); text-transform: uppercase; margin-bottom: 8px;
+}
+.logo h1 {
+font-family: ‘Playfair Display’, serif;
+font-size: 1.5rem; color: #fff; line-height: 1.2;
+}
+.logo p { font-size: 12px; color: rgba(255,255,255,0.35); margin-top: 4px; }
+
+.sidebar-section { padding: 24px 28px 0; }
+.sidebar-label {
+font-size: 9px; font-weight: 700; letter-spacing: 3px;
+color: rgba(255,255,255,0.25); text-transform: uppercase; margin-bottom: 12px;
+}
+
+.search-box {
+position: relative; margin-bottom: 20px;
+}
+.search-box input {
+width: 100%; padding: 10px 14px 10px 36px;
+background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+border-radius: 10px; color: #fff; font-family: ‘Outfit’, sans-serif;
+font-size: 13px; outline: none; transition: all 0.2s;
+}
+.search-box input::placeholder { color: rgba(255,255,255,0.25); }
+.search-box input:focus { background: rgba(255,255,255,0.1); border-color: var(–gold); }
+.search-icon {
+position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+font-size: 13px; opacity: 0.4;
+}
+
+.cat-list { display: flex; flex-direction: column; gap: 2px; }
+.cat-btn {
+display: flex; align-items: center; gap: 10px;
+padding: 9px 12px; border-radius: 8px;
+border: none; background: none; cursor: pointer;
+color: rgba(255,255,255,0.5); font-family: ‘Outfit’, sans-serif;
+font-size: 13px; text-align: left; width: 100%;
+transition: all 0.2s;
+}
+.cat-btn:hover { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.8); }
+.cat-btn.active { background: rgba(201,168,76,0.15); color: var(–gold2); }
+.cat-emoji { font-size: 16px; width: 22px; text-align: center; }
+.cat-count {
+margin-left: auto; font-size: 11px;
+background: rgba(255,255,255,0.08); padding: 2px 8px;
+border-radius: 99px; color: rgba(255,255,255,0.3);
+}
+.cat-btn.active .cat-count { background: rgba(201,168,76,0.2); color: var(–gold); }
+
+.sidebar-stats {
+margin-top: auto; padding: 24px 28px 0;
+border-top: 1px solid rgba(255,255,255,0.06);
+}
+.stat-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.stat-label { font-size: 12px; color: rgba(255,255,255,0.3); }
+.stat-val { font-size: 13px; font-weight: 600; color: var(–gold2); }
+
+/* ─── Main ─── */
+.main { flex: 1; overflow-x: hidden; }
+
+.topbar {
+background: var(–surface);
+border-bottom: 1px solid var(–border);
+padding: 16px 40px;
+display: flex; align-items: center; gap: 16px;
+position: sticky; top: 0; z-index: 10;
+box-shadow: 0 2px 12px rgba(26,26,46,0.06);
+}
+.topbar-title {
+font-weight: 700; font-size: 15px; flex: 1;
+}
+.topbar-sub { font-size: 12px; color: var(–ink3); font-weight: 400; }
+
+.mode-btns { display: flex; gap: 6px; }
+.mode-btn {
+padding: 7px 16px; border-radius: 8px; border: 1.5px solid var(–border);
+background: none; cursor: pointer; font-family: ‘Outfit’, sans-serif;
+font-size: 12px; font-weight: 600; color: var(–ink2); transition: all 0.2s;
+}
+.mode-btn:hover { border-color: var(–gold); color: var(–ink); }
+.mode-btn.active {
+background: var(–card-a); border-color: var(–card-a);
+color: var(–gold2);
+}
+
+.shuffle-btn {
+padding: 7px 14px; border-radius: 8px;
+border: 1.5px solid var(–border); background: none; cursor: pointer;
+font-size: 13px; transition: all 0.2s;
+}
+.shuffle-btn:hover { border-color: var(–gold); transform: rotate(20deg); }
+
+/* ─── Flashcard Mode ─── */
+#flashcard-mode { padding: 40px; }
+
+.fc-wrap {
+max-width: 680px; margin: 0 auto;
+}
+
+.progress-area { margin-bottom: 32px; }
+.progress-row {
+display: flex; justify-content: space-between;
+font-size: 12px; color: var(–ink3); margin-bottom: 8px;
+}
+.prog-bar { height: 4px; background: var(–border); border-radius: 99px; overflow: hidden; }
+.prog-fill {
+height: 100%; border-radius: 99px;
+background: linear-gradient(90deg, var(–gold), var(–teal));
+transition: width 0.5s cubic-bezier(.4,0,.2,1);
+}
+
+.card-scene { perspective: 1400px; margin-bottom: 28px; }
+.card {
+width: 100%; height: 440px;
+position: relative; transform-style: preserve-3d;
+transition: transform 0.65s cubic-bezier(.4,0,.2,1);
+cursor: pointer;
+}
+.card.flipped { transform: rotateY(180deg); }
+
+.card-face {
+position: absolute; inset: 0;
+backface-visibility: hidden;
+border-radius: 28px;
+overflow: hidden;
+}
+
+/* FRONT */
+.card-front {
+background: var(–card-a);
+display: flex; flex-direction: column;
+align-items: center; justify-content: center;
+padding: 48px 40px; gap: 16px;
+position: relative;
+}
+.card-front::before {
+content: ‘’;
+position: absolute; inset: 0;
+background: radial-gradient(ellipse at 50% 0%, rgba(201,168,76,0.12) 0%, transparent 60%);
+}
+.card-front-corner {
+position: absolute; top: 0; left: 0; right: 0;
+height: 3px;
+background: linear-gradient(90deg, transparent, var(–gold), var(–teal), transparent);
+}
+.fc-num {
+position: absolute; top: 22px; right: 26px;
+font-size: 11px; font-weight: 600; letter-spacing: 1px;
+color: rgba(255,255,255,0.2);
+}
+.fc-cat-badge {
+position: absolute; top: 22px; left: 26px;
+font-size: 10px; font-weight: 700; letter-spacing: 2px;
+text-transform: uppercase; color: var(–gold);
+background: rgba(201,168,76,0.12);
+padding: 4px 10px; border-radius: 99px;
+border: 1px solid rgba(201,168,76,0.2);
+}
+.fc-emoji {
+font-size: 72px; line-height: 1; position: relative; z-index: 1;
+animation: bobble 4s ease-in-out infinite;
+}
+@keyframes bobble {
+0%,100% { transform: translateY(0) rotate(-2deg); }
+50% { transform: translateY(-10px) rotate(2deg); }
+}
+.fc-word {
+font-family: ‘Playfair Display’, serif;
+font-size: clamp(2rem, 5vw, 3.2rem);
+color: #fff; text-align: center;
+position: relative; z-index: 1;
+line-height: 1.1;
+}
+.fc-word em { color: var(–gold2); font-style: normal; }
+.fc-phonetic {
+display: flex; align-items: center; gap: 10px;
+position: relative; z-index: 1;
+}
+.fc-ipa { font-size: 15px; color: rgba(255,255,255,0.4); font-style: italic; }
+.speak-btn {
+width: 34px; height: 34px; border-radius: 50%;
+border: 1.5px solid rgba(201,168,76,0.3);
+background: rgba(201,168,76,0.08);
+color: var(–gold); cursor: pointer; font-size: 12px;
+display: flex; align-items: center; justify-content: center;
+transition: all 0.2s;
+}
+.speak-btn:hover { background: rgba(201,168,76,0.2); transform: scale(1.1); }
+.fc-hint {
+position: absolute; bottom: 20px;
+font-size: 11px; color: rgba(255,255,255,0.2);
+letter-spacing: 1px; display: flex; align-items: center; gap: 5px;
+}
+
+/* BACK */
+.card-back {
+transform: rotateY(180deg);
+background: var(–surface);
+padding: 36px; display: flex; flex-direction: column; gap: 18px;
+border: 1px solid var(–border);
+}
+.card-back::before {
+content: ‘’;
+position: absolute; top: 0; left: 0; right: 0; height: 3px;
+background: linear-gradient(90deg, transparent, var(–rose), var(–teal), transparent);
+}
+.back-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.back-verb {
+font-family: ‘Playfair Display’, serif;
+font-size: 1.8rem; color: var(–ink); line-height: 1.1;
+}
+.back-verb em { color: var(–gold); font-style: normal; }
+.vtype {
+font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+color: var(–rose); background: rgba(251,113,133,0.1);
+padding: 4px 10px; border-radius: 99px; border: 1px solid rgba(251,113,133,0.2);
+white-space: nowrap; margin-top: 4px;
+}
+.def-en { font-size: 16px; font-weight: 600; color: var(–ink); line-height: 1.5; }
+.def-vi { font-size: 13px; color: var(–ink3); margin-top: 3px; font-weight: 300; font-style: italic; }
+.divider { height: 1px; background: var(–border); }
+.back-section-label {
+font-size: 9px; font-weight: 700; letter-spacing: 3px;
+text-transform: uppercase; color: var(–ink3); margin-bottom: 6px;
+}
+.ex-en {
+font-size: 14px; color: var(–ink); line-height: 1.7; font-weight: 300;
+}
+.ex-en strong { color: var(–gold); font-weight: 700; font-style: italic; }
+.ex-vi { font-size: 12px; color: var(–ink3); margin-top: 5px; font-style: italic; line-height: 1.6; }
+.tip-box {
+background: rgba(45,212,191,0.05); border: 1px solid rgba(45,212,191,0.15);
+border-radius: 10px; padding: 10px 14px;
+font-size: 12px; color: var(–ink2); line-height: 1.6;
+display: flex; gap: 8px;
+}
+
+/* Controls */
+.fc-controls {
+display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 36px;
+}
+.ctrl-btn {
+height: 50px; border-radius: 12px; border: 1.5px solid var(–border);
+background: var(–surface); cursor: pointer; font-family: ‘Outfit’, sans-serif;
+font-weight: 600; font-size: 14px; color: var(–ink2); transition: all 0.2s;
+display: flex; align-items: center; gap: 8px; justify-content: center;
+}
+.ctrl-btn:hover:not(:disabled) { border-color: var(–gold); color: var(–ink); transform: translateY(-1px); box-shadow: var(–shadow); }
+.ctrl-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+.ctrl-nav { width: 50px; font-size: 18px; }
+.ctrl-flip { width: 200px; }
+.ctrl-flip:hover { background: var(–card-a); color: var(–gold2); border-color: var(–card-a); }
+
+/* ─── Grid Mode ─── */
+#grid-mode { padding: 32px 40px; display: none; }
+.grid-header { margin-bottom: 24px; }
+.grid-title { font-family: ‘Playfair Display’, serif; font-size: 1.6rem; margin-bottom: 4px; }
+.grid-sub { font-size: 13px; color: var(–ink3); }
+.word-grid {
+display: grid;
+grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+gap: 12px;
+}
+.grid-card {
+background: var(–surface); border: 1px solid var(–border);
+border-radius: 16px; padding: 20px; cursor: pointer;
+transition: all 0.25s; position: relative; overflow: hidden;
+}
+.grid-card::before {
+content: ‘’;
+position: absolute; top: 0; left: 0; right: 0; height: 3px;
+background: linear-gradient(90deg, var(–gold), var(–teal));
+transform: scaleX(0); transform-origin: left;
+transition: transform 0.3s;
+}
+.grid-card:hover { transform: translateY(-3px); box-shadow: var(–shadow-lg); border-color: rgba(201,168,76,0.2); }
+.grid-card:hover::before { transform: scaleX(1); }
+.gc-emoji { font-size: 28px; margin-bottom: 8px; display: block; }
+.gc-word { font-family: ‘Playfair Display’, serif; font-size: 1.1rem; color: var(–ink); margin-bottom: 4px; }
+.gc-word em { color: var(–gold); font-style: normal; }
+.gc-def { font-size: 12px; color: var(–ink3); line-height: 1.5; }
+.gc-badge {
+display: inline-block; margin-top: 8px;
+font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+color: var(–ink3); background: var(–bg); padding: 3px 8px;
+border-radius: 99px; border: 1px solid var(–border);
+}
+
+/* ─── Quiz Mode ─── */
+#quiz-mode { padding: 40px; display: none; }
+.quiz-wrap { max-width: 620px; margin: 0 auto; }
+.quiz-q {
+background: var(–card-a); border-radius: 24px; padding: 40px;
+text-align: center; margin-bottom: 24px; position: relative; overflow: hidden;
+}
+.quiz-q::before {
+content: ‘’;
+position: absolute; inset: 0;
+background: radial-gradient(ellipse at 50% 0%, rgba(201,168,76,0.1) 0%, transparent 70%);
+}
+.quiz-emoji { font-size: 56px; display: block; margin-bottom: 16px; position: relative; z-index:1; }
+.quiz-prompt { font-size: 12px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,0.3); margin-bottom: 10px; position: relative; z-index:1; }
+.quiz-word {
+font-family: ‘Playfair Display’, serif; font-size: 2.8rem; color: #fff;
+position: relative; z-index:1;
+}
+.quiz-word em { color: var(–gold2); font-style: normal; }
+.quiz-ipa { font-size: 15px; color: rgba(255,255,255,0.35); font-style: italic; margin-top: 8px; position: relative; z-index:1; }
+
+.quiz-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 28px; }
+.quiz-opt {
+padding: 16px 20px; background: var(–surface); border: 2px solid var(–border);
+border-radius: 14px; cursor: pointer; font-family: ‘Outfit’, sans-serif;
+font-size: 14px; font-weight: 500; color: var(–ink); text-align: left;
+transition: all 0.2s; line-height: 1.4;
+}
+.quiz-opt:hover:not(.disabled) { border-color: var(–gold); transform: translateY(-2px); box-shadow: var(–shadow); }
+.quiz-opt.correct { background: rgba(45,212,191,0.1); border-color: var(–teal); color: #0d9488; }
+.quiz-opt.wrong { background: rgba(251,113,133,0.1); border-color: var(–rose); color: #e11d48; }
+.quiz-opt.disabled { cursor: default; }
+.opt-letter {
+display: inline-block; width: 22px; height: 22px; border-radius: 6px;
+background: var(–bg); font-size: 11px; font-weight: 700; text-align: center;
+line-height: 22px; margin-right: 10px; color: var(–ink3);
+flex-shrink: 0;
+}
+.quiz-score {
+display: flex; justify-content: center; gap: 32px; margin-bottom: 20px;
+}
+.score-item { text-align: center; }
+.score-num { font-size: 2rem; font-weight: 800; }
+.score-lbl { font-size: 11px; color: var(–ink3); font-weight: 500; letter-spacing: 1px; text-transform: uppercase; }
+.score-correct .score-num { color: var(–teal); }
+.score-wrong .score-num { color: var(–rose); }
+
+.quiz-feedback {
+background: var(–surface); border: 1px solid var(–border);
+border-radius: 14px; padding: 16px 20px; margin-bottom: 20px;
+font-size: 14px; line-height: 1.6; display: none;
+}
+.quiz-feedback.show { display: block; }
+.quiz-next {
+width: 100%; padding: 16px; border-radius: 14px;
+background: var(–card-a); border: none; cursor: pointer;
+font-family: ‘Outfit’, sans-serif; font-size: 15px; font-weight: 700;
+color: var(–gold2); transition: all 0.2s; display: none;
+}
+.quiz-next.show { display: block; }
+.quiz-next:hover { background: #0d0f1a; }
+
+/* ─── Empty state ─── */
+.empty-state {
+text-align: center; padding: 80px 40px; color: var(–ink3);
+}
+.empty-state .e-emoji { font-size: 48px; margin-bottom: 16px; }
+.empty-state h3 { font-size: 1.1rem; font-weight: 600; color: var(–ink2); margin-bottom: 8px; }
+.empty-state p { font-size: 14px; }
+
+/* Responsive */
+@media(max-width: 900px) {
+.sidebar { display: none; }
+#flashcard-mode, #grid-mode, #quiz-mode { padding: 24px 20px; }
+.topbar { padding: 12px 20px; }
+.quiz-opts { grid-template-columns: 1fr; }
+}
+</style>
+
+</head>
+<body>
+<div class="app">
+
+<!-- Sidebar -->
+
+<aside class="sidebar">
+  <div class="logo">
+    <div class="logo-tag">✦ Flashcard Master</div>
+    <h1>200 Phrasal<br>Verbs</h1>
+    <p>Tiếng Anh thực chiến</p>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-label">Tìm kiếm</div>
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="search-input" placeholder="Tìm phrasal verb..." oninput="handleSearch()">
+    </div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-label">Danh mục</div>
+    <div class="cat-list" id="cat-list"></div>
+  </div>
+
+  <div class="sidebar-stats">
+    <div class="sidebar-label">Thống kê</div>
+    <div class="stat-row"><span class="stat-label">Tổng số thẻ</span><span class="stat-val" id="stat-total">200</span></div>
+    <div class="stat-row"><span class="stat-label">Đang hiển thị</span><span class="stat-val" id="stat-showing">200</span></div>
+    <div class="stat-row"><span class="stat-label">Quiz đúng</span><span class="stat-val" id="stat-correct">0 / 0</span></div>
+  </div>
+</aside>
+
+<!-- Main -->
+
+<main class="main">
+  <div class="topbar">
+    <div>
+      <div class="topbar-title" id="topbar-title">Tất cả Phrasal Verbs</div>
+      <div class="topbar-sub" id="topbar-sub">200 từ · Nhấp thẻ để lật · Phím ← → Space</div>
+    </div>
+    <div class="mode-btns">
+      <button class="mode-btn active" id="btn-mode-fc" onclick="setMode('flashcard')">🃏 Flashcard</button>
+      <button class="mode-btn" id="btn-mode-grid" onclick="setMode('grid')">📋 Danh sách</button>
+      <button class="mode-btn" id="btn-mode-quiz" onclick="setMode('quiz')">🎯 Quiz</button>
+    </div>
+    <button class="shuffle-btn" onclick="shuffle()" title="Trộn bài">🔀</button>
+  </div>
+
+  <!-- Flashcard Mode -->
+
+  <div id="flashcard-mode">
+    <div class="fc-wrap">
+      <div class="progress-area">
+        <div class="progress-row">
+          <span id="fc-progress-text">1 / 200</span>
+          <span id="fc-progress-pct">1%</span>
+        </div>
+        <div class="prog-bar"><div class="prog-fill" id="prog-fill" style="width:1%"></div></div>
+      </div>
+
+```
+  <div class="card-scene">
+    <div class="card" id="fc-card" onclick="flipCard()">
+      <div class="card-face card-front" id="fc-front">
+        <div class="card-front-corner"></div>
+        <span class="fc-cat-badge" id="fc-badge">—</span>
+        <span class="fc-num" id="fc-num">01</span>
+        <div class="fc-emoji" id="fc-emoji">📚</div>
+        <div class="fc-word" id="fc-word">phrasal <em>verb</em></div>
+        <div class="fc-phonetic">
+          <span class="fc-ipa" id="fc-ipa">/ˈfreɪzəl vɜːb/</span>
+          <button class="speak-btn" onclick="speak(event)" title="Nghe phát âm">🔊</button>
+        </div>
+        <div class="fc-hint">↩ nhấp để xem nghĩa</div>
+      </div>
+      <div class="card-face card-back" id="fc-back">
+        <div class="back-top">
+          <div class="back-verb" id="back-verb">phrasal <em>verb</em></div>
+          <div class="vtype" id="back-vtype">—</div>
+        </div>
+        <div>
+          <div class="def-en" id="back-def-en">Definition here</div>
+          <div class="def-vi" id="back-def-vi">Định nghĩa tiếng Việt</div>
+        </div>
+        <div class="divider"></div>
+        <div>
+          <div class="back-section-label">📖 Ví dụ</div>
+          <div class="ex-en" id="back-ex-en">"Example sentence here."</div>
+          <div class="ex-vi" id="back-ex-vi">"Câu ví dụ dịch sang tiếng Việt."</div>
+        </div>
+        <div class="tip-box">💡 <span id="back-tip">Tip here</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="fc-controls">
+    <button class="ctrl-btn ctrl-nav" id="btn-prev" onclick="prevCard()">←</button>
+    <button class="ctrl-btn ctrl-flip" onclick="flipCard()">↩ Lật thẻ</button>
+    <button class="ctrl-btn ctrl-nav" id="btn-next" onclick="nextCard()">→</button>
+  </div>
+</div>
+```
+
+  </div>
+
+  <!-- Grid Mode -->
+
+  <div id="grid-mode">
+    <div class="grid-header">
+      <div class="grid-title">Danh sách từ</div>
+      <div class="grid-sub" id="grid-sub">Nhấp vào thẻ để xem chi tiết</div>
+    </div>
+    <div class="word-grid" id="word-grid"></div>
+  </div>
+
+  <!-- Quiz Mode -->
+
+  <div id="quiz-mode">
+    <div class="quiz-wrap">
+      <div class="quiz-score">
+        <div class="score-item score-correct"><div class="score-num" id="q-correct">0</div><div class="score-lbl">Đúng</div></div>
+        <div class="score-item"><div class="score-num" id="q-total" style="color:var(--ink2)">0</div><div class="score-lbl">Tổng</div></div>
+        <div class="score-item score-wrong"><div class="score-num" id="q-wrong">0</div><div class="score-lbl">Sai</div></div>
+      </div>
+      <div class="quiz-q">
+        <span class="quiz-emoji" id="q-emoji">🎯</span>
+        <div class="quiz-prompt">Nghĩa của phrasal verb này là gì?</div>
+        <div class="quiz-word" id="q-word">—</div>
+        <div class="quiz-ipa" id="q-ipa">—</div>
+      </div>
+      <div class="quiz-opts" id="quiz-opts"></div>
+      <div class="quiz-feedback" id="quiz-feedback"></div>
+      <button class="quiz-next" id="quiz-next" onclick="nextQuiz()">Câu tiếp theo →</button>
+    </div>
+  </div>
+</main>
+</div>
+
+<script>
+// ════════════════════════════════════════
+// DATA — 200 Phrasal Verbs
+// ════════════════════════════════════════
+const CARDS = [
+// ── COMMUNICATION ──
+{cat:"💬 Giao tiếp",emoji:"🗣️",v:"bring",p:"up",ipa:"/brɪŋ ʌp/",en:"To mention a topic in conversation",vi:"Đề cập đến một chủ đề",badge:"Đề cập",ex:"He always <strong>brings up</strong> politics at dinner.",exvi:"Anh ấy luôn đề cập đến chính trị trong bữa tối.",tip:"Bring up cũng = nuôi dưỡng con cái (She was brought up in Hanoi)"},
+{cat:"💬 Giao tiếp",emoji:"🤐",v:"clam",p:"up",ipa:"/klæm ʌp/",en:"To suddenly stop talking",vi:"Đột ngột im lặng, không nói gì",badge:"Im lặng",ex:"He <strong>clammed up</strong> when asked about his past.",exvi:"Anh ấy im bặt khi được hỏi về quá khứ.",tip:"Informal, thể hiện sự ngại ngùng hoặc từ chối tiết lộ"},
+{cat:"💬 Giao tiếp",emoji:"📣",v:"speak",p:"up",ipa:"/spiːk ʌp/",en:"To talk louder; to express opinion boldly",vi:"Nói to hơn; dũng cảm nêu ý kiến",badge:"Lên tiếng",ex:"Don't be afraid to <strong>speak up</strong> in meetings.",exvi:"Đừng ngại lên tiếng trong các cuộc họp.",tip:"Speak up for = bênh vực ai đó"},
+{cat:"💬 Giao tiếp",emoji:"🔇",v:"shut",p:"up",ipa:"/ʃʌt ʌp/",en:"To stop talking (rude); to make someone stop",vi:"Im miệng (thô tục); bịt miệng ai",badge:"Im đi",ex:"She told him to <strong>shut up</strong> and listen.",exvi:"Cô ấy bảo anh im miệng và lắng nghe.",tip:"Dùng thận trọng — rất thô lỗ trong nhiều ngữ cảnh"},
+{cat:"💬 Giao tiếp",emoji:"💬",v:"talk",p:"over",ipa:"/tɔːk ˈəʊvə/",en:"To discuss something thoroughly",vi:"Thảo luận kỹ lưỡng về điều gì đó",badge:"Thảo luận",ex:"Let's <strong>talk over</strong> the plan before we decide.",exvi:"Hãy thảo luận về kế hoạch trước khi quyết định.",tip:"Talk over someone = nói chèn lên lời người khác"},
+{cat:"💬 Giao tiếp",emoji:"🤝",v:"get",p:"through",ipa:"/ɡɛt θruː/",en:"To succeed in communicating with someone",vi:"Truyền đạt thành công, liên lạc được",badge:"Truyền đạt",ex:"I couldn't <strong>get through</strong> to him no matter what I said.",exvi:"Tôi không thể truyền đạt được với anh ấy dù nói gì.",tip:"Cũng = liên lạc qua điện thoại (I finally got through)"},
+{cat:"💬 Giao tiếp",emoji:"📞",v:"hang",p:"up",ipa:"/hæŋ ʌp/",en:"To end a phone call",vi:"Cúp máy điện thoại",badge:"Cúp máy",ex:"She <strong>hung up</strong> before I could explain.",exvi:"Cô ấy cúp máy trước khi tôi có thể giải thích.",tip:"Hang up on someone = cúp máy vào mặt ai"},
+{cat:"💬 Giao tiếp",emoji:"📱",v:"call",p:"back",ipa:"/kɔːl bæk/",en:"To return a phone call",vi:"Gọi lại",badge:"Gọi lại",ex:"I'll <strong>call you back</strong> in five minutes.",exvi:"Tôi sẽ gọi lại cho bạn sau năm phút.",tip:"Call back cũng = yêu cầu ai quay lại (gặp mặt)"},
+{cat:"💬 Giao tiếp",emoji:"🙅",v:"talk",p:"back",ipa:"/tɔːk bæk/",en:"To reply rudely to someone in authority",vi:"Cãi lại, nói hỗn với người có quyền",badge:"Cãi lại",ex:"Don't <strong>talk back</strong> to your teacher.",exvi:"Đừng cãi lại giáo viên.",tip:"Rất phổ biến khi nói về trẻ em không vâng lời"},
+{cat:"💬 Giao tiếp",emoji:"🔄",v:"get",p:"back to",ipa:"/ɡɛt bæk tuː/",en:"To contact someone again later",vi:"Liên lạc lại với ai sau",badge:"Liên lạc lại",ex:"I'll <strong>get back to</strong> you about that tomorrow.",exvi:"Tôi sẽ liên lạc lại với bạn về vấn đề đó vào ngày mai.",tip:"Phổ biến trong email công việc"},
+
+// ── DAILY LIFE ──
+{cat:"🏠 Cuộc sống",emoji:"🌅",v:"wake",p:"up",ipa:"/weɪk ʌp/",en:"To stop sleeping; to become aware",vi:"Thức dậy; nhận ra điều gì",badge:"Thức dậy",ex:"I <strong>wake up</strong> at 6 AM every day.",exvi:"Tôi thức dậy lúc 6 giờ sáng mỗi ngày.",tip:"Wake up (to sth) = nhận ra sự thật"},
+{cat:"🏠 Cuộc sống",emoji:"👕",v:"put",p:"on",ipa:"/pʊt ɒn/",en:"To dress in clothing",vi:"Mặc (quần áo), đội (mũ), đi (giày)",badge:"Mặc vào",ex:"She <strong>put on</strong> her coat before leaving.",exvi:"Cô ấy mặc áo khoác trước khi ra đi.",tip:"Ngược với take off = cởi ra"},
+{cat:"🏠 Cuộc sống",emoji:"🧴",v:"run",p:"out of",ipa:"/rʌn aʊt ɒv/",en:"To have no more of something",vi:"Hết (cái gì đó), cạn kiệt",badge:"Hết",ex:"We've <strong>run out of</strong> milk. Can you buy some?",exvi:"Chúng ta đã hết sữa. Bạn có thể mua không?",tip:"Run out (without 'of') cũng = chạy ra ngoài"},
+{cat:"🏠 Cuộc sống",emoji:"🍽️",v:"eat",p:"out",ipa:"/iːt aʊt/",en:"To have a meal at a restaurant",vi:"Ăn ngoài hàng",badge:"Ăn ngoài",ex:"We decided to <strong>eat out</strong> to celebrate.",exvi:"Chúng tôi quyết định ăn ngoài để kỷ niệm.",tip:"Eat in = ăn ở nhà"},
+{cat:"🏠 Cuộc sống",emoji:"🛒",v:"pick",p:"up",ipa:"/pɪk ʌp/",en:"To collect or buy something; to learn casually",vi:"Lấy/mua; học được một cách tự nhiên",badge:"Lấy / Học",ex:"Can you <strong>pick up</strong> some groceries on the way home?",exvi:"Bạn có thể mua đồ tạp hóa trên đường về không?",tip:"Pick up a language = học ngôn ngữ tự nhiên"},
+{cat:"🏠 Cuộc sống",emoji:"🧹",v:"tidy",p:"up",ipa:"/ˈtaɪdi ʌp/",en:"To clean and organize a space",vi:"Dọn dẹp, sắp xếp gọn gàng",badge:"Dọn dẹp",ex:"Please <strong>tidy up</strong> your room before dinner.",exvi:"Hãy dọn dẹp phòng trước bữa tối.",tip:"Dùng phổ biến ở British English"},
+{cat:"🏠 Cuộc sống",emoji:"🔋",v:"use",p:"up",ipa:"/juːz ʌp/",en:"To finish a supply completely",vi:"Dùng hết, tiêu hao hết",badge:"Dùng hết",ex:"You've <strong>used up</strong> all the hot water!",exvi:"Bạn đã dùng hết nước nóng rồi!",tip:"Use up thường gợi ý sự lãng phí"},
+{cat:"🏠 Cuộc sống",emoji:"🚪",v:"drop",p:"by",ipa:"/drɒp baɪ/",en:"To visit briefly and informally",vi:"Ghé thăm nhanh",badge:"Ghé thăm",ex:"Feel free to <strong>drop by</strong> anytime.",exvi:"Cứ thoải mái ghé thăm bất cứ lúc nào.",tip:"Tương tự: drop in, stop by"},
+{cat:"🏠 Cuộc sống",emoji:"😴",v:"stay",p:"up",ipa:"/steɪ ʌp/",en:"To remain awake, especially late",vi:"Thức khuya, không đi ngủ",badge:"Thức khuya",ex:"They <strong>stayed up</strong> all night studying for the exam.",exvi:"Họ thức cả đêm để học cho kỳ thi.",tip:"Stay up late = thức khuya"},
+{cat:"🏠 Cuộc sống",emoji:"🏃",v:"hurry",p:"up",ipa:"/ˈhʌri ʌp/",en:"To move or do something faster",vi:"Nhanh lên, khẩn trương",badge:"Nhanh lên",ex:"<strong>Hurry up</strong>! We're going to miss the bus.",exvi:"Nhanh lên! Chúng ta sắp lỡ xe buýt rồi.",tip:"Cũng nói: Get a move on / Speed up"},
+
+// ── WORK / STUDY ──
+{cat:"💼 Công việc",emoji:"📋",v:"carry",p:"out",ipa:"/ˈkæri aʊt/",en:"To complete or perform a task",vi:"Thực hiện, tiến hành nhiệm vụ",badge:"Thực hiện",ex:"We need to <strong>carry out</strong> more tests.",exvi:"Chúng ta cần tiến hành thêm nhiều thử nghiệm.",tip:"Formal; phổ biến trong văn bản học thuật"},
+{cat:"💼 Công việc",emoji:"📊",v:"draw",p:"up",ipa:"/drɔː ʌp/",en:"To prepare a document or plan",vi:"Soạn thảo, lên kế hoạch",badge:"Soạn thảo",ex:"Can you <strong>draw up</strong> a contract by Friday?",exvi:"Bạn có thể soạn thảo hợp đồng trước thứ Sáu không?",tip:"Chủ yếu dùng cho tài liệu: plans, contracts, reports"},
+{cat:"💼 Công việc",emoji:"✅",v:"take",p:"over",ipa:"/teɪk ˈəʊvə/",en:"To gain control of something",vi:"Tiếp quản, nắm quyền kiểm soát",badge:"Tiếp quản",ex:"She <strong>took over</strong> the project when he left.",exvi:"Cô ấy tiếp quản dự án khi anh ấy rời đi.",tip:"Takeover (danh từ) = sự tiếp quản"},
+{cat:"💼 Công việc",emoji:"📈",v:"set",p:"up",ipa:"/sɛt ʌp/",en:"To establish or organize something",vi:"Thành lập, thiết lập",badge:"Thành lập",ex:"He <strong>set up</strong> a new company at 25.",exvi:"Anh ấy thành lập công ty mới năm 25 tuổi.",tip:"Setup (n) = sự thiết lập; Set up = nhiều nghĩa"},
+{cat:"💼 Công việc",emoji:"📝",v:"fill",p:"in",ipa:"/fɪl ɪn/",en:"To complete a form or document",vi:"Điền vào (biểu mẫu)",badge:"Điền vào",ex:"Please <strong>fill in</strong> this application form.",exvi:"Vui lòng điền vào mẫu đơn này.",tip:"Fill in for someone = thay thế ai tạm thời"},
+{cat:"💼 Công việc",emoji:"🔧",v:"work",p:"out",ipa:"/wɜːk aʊt/",en:"To solve; to exercise; to succeed",vi:"Giải quyết; tập thể dục; thành công",badge:"Giải quyết",ex:"Don't worry — it'll <strong>work out</strong> in the end.",exvi:"Đừng lo — rồi sẽ ổn thôi.",tip:"Ba nghĩa chính: giải quyết, tập gym, và diễn ra tốt đẹp"},
+{cat:"💼 Công việc",emoji:"🤝",v:"team",p:"up",ipa:"/tiːm ʌp/",en:"To join together for a common goal",vi:"Hợp tác cùng nhau để đạt mục tiêu",badge:"Hợp tác",ex:"The two companies <strong>teamed up</strong> to launch the product.",exvi:"Hai công ty đã hợp tác để ra mắt sản phẩm.",tip:"Thường dùng: team up with someone"},
+{cat:"💼 Công việc",emoji:"🎯",v:"focus",p:"on",ipa:"/ˈfəʊkəs ɒn/",en:"To concentrate attention on something",vi:"Tập trung vào điều gì đó",badge:"Tập trung",ex:"Let's <strong>focus on</strong> the most important issues first.",exvi:"Hãy tập trung vào những vấn đề quan trọng nhất trước.",tip:"Rất phổ biến trong môi trường làm việc"},
+{cat:"💼 Công việc",emoji:"😤",v:"put",p:"off",ipa:"/pʊt ɒf/",en:"To postpone; to discourage",vi:"Trì hoãn; làm nản lòng",badge:"Trì hoãn",ex:"Stop <strong>putting off</strong> that report — do it now!",exvi:"Ngừng trì hoãn bản báo cáo đó — làm ngay đi!",tip:"Put someone off = làm ai chán / mất hứng"},
+{cat:"💼 Công việc",emoji:"🔄",v:"follow",p:"up",ipa:"/ˈfɒləʊ ʌp/",en:"To check on the status of something",vi:"Theo dõi, kiểm tra tiến độ",badge:"Theo dõi",ex:"I'll <strong>follow up</strong> on that email tomorrow.",exvi:"Tôi sẽ theo dõi email đó vào ngày mai.",tip:"Follow-up (n/adj) = cuộc gặp/hành động tiếp theo"},
+
+// ── EMOTIONS ──
+{cat:"❤️ Cảm xúc",emoji:"😊",v:"cheer",p:"up",ipa:"/tʃɪər ʌp/",en:"To become or make someone happier",vi:"Vui lên, làm ai đó vui hơn",badge:"Vui lên",ex:"She bought flowers to <strong>cheer him up</strong>.",exvi:"Cô ấy mua hoa để làm anh ấy vui hơn.",tip:"Cheer up! = Hãy vui lên! (lời động viên)"},
+{cat:"❤️ Cảm xúc",emoji:"😰",v:"freak",p:"out",ipa:"/friːk aʊt/",en:"To become extremely upset or scared",vi:"Hoảng loạn, mất bình tĩnh",badge:"Hoảng loạn",ex:"She totally <strong>freaked out</strong> when she saw the spider.",exvi:"Cô ấy hoảng loạn hoàn toàn khi thấy con nhện.",tip:"Informal / slang; cũng = làm ai đó kinh hoàng"},
+{cat:"❤️ Cảm xúc",emoji:"😭",v:"break",p:"down",ipa:"/breɪk daʊn/",en:"To collapse emotionally; to stop working",vi:"Gục ngã về cảm xúc; hỏng hóc",badge:"Gục ngã",ex:"She <strong>broke down</strong> crying at the funeral.",exvi:"Cô ấy gục ngã khóc tại đám tang.",tip:"Breakdown (n) = sự sụp đổ / hỏng máy"},
+{cat:"❤️ Cảm xúc",emoji:"😤",v:"bottle",p:"up",ipa:"/ˈbɒtl ʌp/",en:"To hide feelings instead of expressing them",vi:"Kìm nén cảm xúc, giấu trong lòng",badge:"Kìm nén",ex:"Don't <strong>bottle up</strong> your feelings — talk to someone.",exvi:"Đừng kìm nén cảm xúc — hãy nói chuyện với ai đó.",tip:"Thường mang nghĩa tiêu cực — không nên làm"},
+{cat:"❤️ Cảm xúc",emoji:"🙁",v:"get",p:"down",ipa:"/ɡɛt daʊn/",en:"To make someone feel sad or depressed",vi:"Làm ai buồn, chán nản",badge:"Làm buồn",ex:"This cold weather is really <strong>getting me down</strong>.",exvi:"Thời tiết lạnh này thực sự làm tôi chán nản.",tip:"Don't let it get you down = đừng để điều đó làm bạn nản"},
+{cat:"❤️ Cảm xúc",emoji:"💪",v:"cheer",p:"on",ipa:"/tʃɪər ɒn/",en:"To encourage with shouts and enthusiasm",vi:"Cổ vũ, hò reo khích lệ",badge:"Cổ vũ",ex:"The crowd <strong>cheered on</strong> their team until the end.",exvi:"Khán giả cổ vũ đội của họ cho đến cuối.",tip:"Cheer someone on from the sidelines = cổ vũ từ xa"},
+{cat:"❤️ Cảm xúc",emoji:"😍",v:"fall",p:"for",ipa:"/fɔːl fɔː/",en:"To fall in love; to be tricked",vi:"Phải lòng ai; bị lừa",badge:"Phải lòng",ex:"He <strong>fell for</strong> her the moment they met.",exvi:"Anh ấy đã phải lòng cô ấy ngay từ khi gặp.",tip:"Fall for a trick = bị lừa bởi một mánh khóe"},
+{cat:"❤️ Cảm xúc",emoji:"😤",v:"take",p:"out on",ipa:"/teɪk aʊt ɒn/",en:"To vent negative feelings on someone unfairly",vi:"Trút giận lên ai không đáng",badge:"Trút giận",ex:"Don't <strong>take it out on</strong> me — it's not my fault!",exvi:"Đừng trút giận lên tôi — đó không phải lỗi của tôi!",tip:"Rất phổ biến trong giao tiếp hàng ngày"},
+{cat:"❤️ Cảm xúc",emoji:"😌",v:"calm",p:"down",ipa:"/kɑːm daʊn/",en:"To become or make less agitated",vi:"Bình tĩnh lại, dịu xuống",badge:"Bình tĩnh",ex:"Take a deep breath and <strong>calm down</strong>.",exvi:"Hít thở sâu và bình tĩnh lại.",tip:"Calm someone down = giúp ai bình tĩnh lại"},
+{cat:"❤️ Cảm xúc",emoji:"🧠",v:"stress",p:"out",ipa:"/strɛs aʊt/",en:"To feel extremely anxious or worried",vi:"Lo lắng, căng thẳng quá mức",badge:"Căng thẳng",ex:"Exam season always <strong>stresses me out</strong>.",exvi:"Mùa thi luôn làm tôi căng thẳng.",tip:"Stressed out (adj) = rất căng thẳng"},
+
+// ── MOVEMENT ──
+{cat:"🚗 Di chuyển",emoji:"🚀",v:"take",p:"off",ipa:"/teɪk ɒf/",en:"To leave the ground; to become successful",vi:"Cất cánh; bắt đầu thành công",badge:"Cất cánh",ex:"The plane <strong>took off</strong> right on time.",exvi:"Máy bay cất cánh đúng giờ.",tip:"His career took off = sự nghiệp bắt đầu bay cao"},
+{cat:"🚗 Di chuyển",emoji:"🏃",v:"run",p:"into",ipa:"/rʌn ˈɪntə/",en:"To meet by chance; to collide with",vi:"Tình cờ gặp; va phải",badge:"Tình cờ gặp",ex:"I <strong>ran into</strong> my old friend at the airport.",exvi:"Tôi tình cờ gặp bạn cũ ở sân bay.",tip:"Run into trouble = gặp khó khăn"},
+{cat:"🚗 Di chuyển",emoji:"🚶",v:"set",p:"out",ipa:"/sɛt aʊt/",en:"To start a journey or begin a task",vi:"Lên đường, bắt đầu hành trình",badge:"Lên đường",ex:"We <strong>set out</strong> at dawn to beat the traffic.",exvi:"Chúng tôi lên đường lúc rạng đông để tránh tắc đường.",tip:"Set out to do sth = dự định làm gì đó"},
+{cat:"🚗 Di chuyển",emoji:"🛑",v:"pull",p:"over",ipa:"/pʊl ˈəʊvə/",en:"To drive to the side of the road and stop",vi:"Dừng xe vào lề đường",badge:"Dừng lại",ex:"The police officer told him to <strong>pull over</strong>.",exvi:"Cảnh sát bảo anh ấy dừng xe vào lề.",tip:"Pull over (v) / Pullover (n) = áo len chui đầu"},
+{cat:"🚗 Di chuyển",emoji:"✈️",v:"check",p:"in",ipa:"/tʃɛk ɪn/",en:"To register on arrival at a hotel/airport",vi:"Làm thủ tục, đăng ký lúc đến",badge:"Làm thủ tục",ex:"We need to <strong>check in</strong> two hours before the flight.",exvi:"Chúng ta cần làm thủ tục hai tiếng trước chuyến bay.",tip:"Check out = trả phòng / kiểm tra"},
+{cat:"🚗 Di chuyển",emoji:"🚪",v:"get",p:"in",ipa:"/ɡɛt ɪn/",en:"To enter a vehicle or arrive",vi:"Vào xe; về đến nơi",badge:"Vào xe",ex:"<strong>Get in</strong> the car, we're late!",exvi:"Vào xe đi, chúng ta muộn rồi!",tip:"Get in late = về muộn; Get in (sth) = vào (xe hơi/taxi)"},
+{cat:"🚗 Di chuyển",emoji:"🚌",v:"get",p:"off",ipa:"/ɡɛt ɒf/",en:"To leave a bus, train, or plane",vi:"Xuống xe (buýt, tàu, máy bay)",badge:"Xuống xe",ex:"I'll <strong>get off</strong> at the next station.",exvi:"Tôi sẽ xuống ở ga tiếp theo.",tip:"Get off = rời khỏi (phương tiện to)"},
+{cat:"🚗 Di chuyển",emoji:"🚂",v:"get",p:"on",ipa:"/ɡɛt ɒn/",en:"To board a bus, train or plane",vi:"Lên xe (buýt, tàu, máy bay)",badge:"Lên xe",ex:"She <strong>got on</strong> the train just as the doors closed.",exvi:"Cô ấy lên tàu ngay khi cửa đóng lại.",tip:"Get on (with) = hòa thuận với ai / tiến triển"},
+{cat:"🚗 Di chuyển",emoji:"⬅️",v:"turn",p:"back",ipa:"/tɜːn bæk/",en:"To return the way you came",vi:"Quay trở lại, đi ngược đường",badge:"Quay lại",ex:"The storm forced us to <strong>turn back</strong>.",exvi:"Cơn bão buộc chúng tôi phải quay trở lại.",tip:"There's no turning back = không thể quay đầu"},
+
+// ── THINKING / UNDERSTANDING ──
+{cat:"🧠 Tư duy",emoji:"🔍",v:"look",p:"up",ipa:"/lʊk ʌp/",en:"To search for information",vi:"Tra cứu thông tin",badge:"Tra cứu",ex:"<strong>Look up</strong> the word if you don't know it.",exvi:"Tra từ nếu bạn không biết nghĩa.",tip:"Things are looking up = tình hình đang cải thiện"},
+{cat:"🧠 Tư duy",emoji:"💡",v:"come",p:"up with",ipa:"/kʌm ʌp wɪð/",en:"To think of an idea or solution",vi:"Nghĩ ra ý tưởng hoặc giải pháp",badge:"Nghĩ ra",ex:"Can you <strong>come up with</strong> a better idea?",exvi:"Bạn có thể nghĩ ra ý tưởng tốt hơn không?",tip:"Informal; dùng phổ biến mỗi ngày"},
+{cat:"🧠 Tư duy",emoji:"🔎",v:"find",p:"out",ipa:"/faɪnd aʊt/",en:"To discover information",vi:"Phát hiện, tìm ra thông tin",badge:"Phát hiện",ex:"Did you <strong>find out</strong> who sent the letter?",exvi:"Bạn đã tìm ra ai gửi bức thư chưa?",tip:"Find out (that) = phát hiện ra rằng"},
+{cat:"🧠 Tư duy",emoji:"🤔",v:"figure",p:"out",ipa:"/ˈfɪɡə aʊt/",en:"To understand or solve after thinking",vi:"Hiểu ra, tìm ra sau khi suy nghĩ",badge:"Hiểu ra",ex:"I can't <strong>figure out</strong> how this machine works.",exvi:"Tôi không thể hiểu cái máy này hoạt động như thế nào.",tip:"Tương tự work out nhưng informal hơn"},
+{cat:"🧠 Tư duy",emoji:"📚",v:"go",p:"over",ipa:"/ɡəʊ ˈəʊvə/",en:"To review something carefully",vi:"Ôn lại, xem xét kỹ lưỡng",badge:"Ôn lại",ex:"Let's <strong>go over</strong> the main points one more time.",exvi:"Hãy ôn lại các điểm chính thêm một lần nữa.",tip:"Go over = đi qua (địa điểm) / vượt quá (con số)"},
+{cat:"🧠 Tư duy",emoji:"🧩",v:"work",p:"out",ipa:"/wɜːk aʊt/",en:"To solve; to exercise; to succeed",vi:"Giải quyết vấn đề",badge:"Giải quyết",ex:"I finally <strong>worked out</strong> the answer.",exvi:"Tôi đã tìm ra đáp án cuối cùng.",tip:"Work out (at the gym) = tập thể dục"},
+{cat:"🧠 Tư duy",emoji:"🏷️",v:"point",p:"out",ipa:"/pɔɪnt aʊt/",en:"To indicate or draw attention to",vi:"Chỉ ra, lưu ý",badge:"Chỉ ra",ex:"She <strong>pointed out</strong> the error in my data.",exvi:"Cô ấy chỉ ra lỗi trong dữ liệu của tôi.",tip:"Formal hơn 'show' — dùng được cả nói lẫn viết"},
+{cat:"🧠 Tư duy",emoji:"🎭",v:"turn",p:"out",ipa:"/tɜːn aʊt/",en:"To result or end up in a certain way",vi:"Hóa ra, kết quả là",badge:"Hóa ra",ex:"Everything <strong>turned out</strong> better than expected.",exvi:"Mọi thứ hóa ra tốt hơn dự kiến.",tip:"It turns out (that)... = hóa ra là..."},
+{cat:"🧠 Tư duy",emoji:"🔒",v:"stick",p:"to",ipa:"/stɪk tuː/",en:"To continue with a decision or plan",vi:"Kiên trì, bám sát kế hoạch",badge:"Kiên trì",ex:"<strong>Stick to</strong> your diet if you want results.",exvi:"Hãy kiên trì với chế độ ăn uống nếu bạn muốn kết quả.",tip:"Stick to your guns = kiên định với quyết định của mình"},
+{cat:"🧠 Tư duy",emoji:"👀",v:"look",p:"into",ipa:"/lʊk ˈɪntə/",en:"To investigate or examine something",vi:"Điều tra, xem xét kỹ",badge:"Điều tra",ex:"The police are <strong>looking into</strong> the incident.",exvi:"Cảnh sát đang điều tra vụ việc.",tip:"Thường dùng trong bối cảnh chính thức"},
+
+// ── RELATIONSHIPS ──
+{cat:"👥 Quan hệ",emoji:"🤝",v:"get",p:"along",ipa:"/ɡɛt əˈlɒŋ/",en:"To have a good relationship",vi:"Hòa thuận, hợp nhau",badge:"Hòa thuận",ex:"Do you <strong>get along</strong> with your new colleagues?",exvi:"Bạn có hòa thuận với đồng nghiệp mới không?",tip:"Get on (BrE) = Get along (AmE)"},
+{cat:"👥 Quan hệ",emoji:"💔",v:"break",p:"up",ipa:"/breɪk ʌp/",en:"To end a romantic relationship",vi:"Chia tay, kết thúc mối quan hệ",badge:"Chia tay",ex:"They <strong>broke up</strong> after three years together.",exvi:"Họ chia tay sau ba năm bên nhau.",tip:"Break up (with someone) = chia tay ai"},
+{cat:"👥 Quan hệ",emoji:"🧍",v:"grow",p:"apart",ipa:"/ɡrəʊ əˈpɑːt/",en:"To gradually become less close",vi:"Dần xa cách nhau",badge:"Xa cách",ex:"We were close friends but slowly <strong>grew apart</strong>.",exvi:"Chúng tôi từng là bạn thân nhưng dần xa cách.",tip:"Xảy ra tự nhiên, không chủ ý"},
+{cat:"👥 Quan hệ",emoji:"😒",v:"fall",p:"out",ipa:"/fɔːl aʊt/",en:"To have an argument and lose a friendship",vi:"Cãi nhau và mất đi tình bạn",badge:"Cãi vã",ex:"He <strong>fell out</strong> with his best friend over money.",exvi:"Anh ấy cãi nhau với bạn thân vì tiền.",tip:"Fall out with someone = mâu thuẫn với ai"},
+{cat:"👥 Quan hệ",emoji:"🌟",v:"look",p:"up to",ipa:"/lʊk ʌp tuː/",en:"To admire and respect someone",vi:"Ngưỡng mộ và kính trọng ai",badge:"Ngưỡng mộ",ex:"I've always <strong>looked up to</strong> my older sister.",exvi:"Tôi luôn ngưỡng mộ chị gái mình.",tip:"Ngược: look down on = coi thường ai"},
+{cat:"👥 Quan hệ",emoji:"💑",v:"go",p:"out with",ipa:"/ɡəʊ aʊt wɪð/",en:"To have a romantic relationship",vi:"Hẹn hò, đang yêu với ai",badge:"Hẹn hò",ex:"She's been <strong>going out with</strong> him for a year.",exvi:"Cô ấy đã hẹn hò với anh ấy được một năm.",tip:"Tương tự: date someone"},
+{cat:"👥 Quan hệ",emoji:"👋",v:"make",p:"up",ipa:"/meɪk ʌp/",en:"To reconcile after a fight",vi:"Hòa giải sau khi cãi nhau",badge:"Hòa giải",ex:"They fought but <strong>made up</strong> the next day.",exvi:"Họ cãi nhau nhưng hòa giải vào hôm sau.",tip:"Make up for = bù đắp cho điều gì đó"},
+{cat:"👥 Quan hệ",emoji:"🧸",v:"grow",p:"up",ipa:"/ɡrəʊ ʌp/",en:"To become an adult; to mature",vi:"Lớn lên, trưởng thành",badge:"Trưởng thành",ex:"Where did you <strong>grow up</strong>?",exvi:"Bạn lớn lên ở đâu?",tip:"Grow up! = Hãy chín chắn lên! (lời nhắc)"},
+{cat:"👥 Quan hệ",emoji:"🤗",v:"open",p:"up",ipa:"/ˈəʊpən ʌp/",en:"To share feelings openly",vi:"Mở lòng, chia sẻ cảm xúc",badge:"Mở lòng",ex:"It took years before he finally <strong>opened up</strong>.",exvi:"Phải mất nhiều năm trước khi anh ấy mới mở lòng.",tip:"Open up to someone = chia sẻ với ai"},
+{cat:"👥 Quan hệ",emoji:"🚶",v:"stand",p:"up for",ipa:"/stænd ʌp fɔː/",en:"To defend or support someone/something",vi:"Bênh vực, bảo vệ ai",badge:"Bênh vực",ex:"Always <strong>stand up for</strong> what you believe in.",exvi:"Luôn bênh vực những gì bạn tin tưởng.",tip:"Stand up to = đương đầu, không chịu khuất phục"},
+
+// ── BUSINESS / MONEY ──
+{cat:"💰 Kinh doanh",emoji:"💸",v:"run",p:"out of",ipa:"/rʌn aʊt ɒv/",en:"To exhaust a supply of resources",vi:"Cạn nguồn tài nguyên / tiền",badge:"Cạn kiệt",ex:"The startup <strong>ran out of</strong> funding.",exvi:"Startup đã cạn nguồn tài trợ.",tip:"Run out of time/money/ideas..."},
+{cat:"💰 Kinh doanh",emoji:"📉",v:"cut",p:"back",ipa:"/kʌt bæk/",en:"To reduce spending or activity",vi:"Cắt giảm chi tiêu hoặc hoạt động",badge:"Cắt giảm",ex:"The company had to <strong>cut back</strong> on staff.",exvi:"Công ty phải cắt giảm nhân sự.",tip:"Cutbacks (n) = đợt cắt giảm"},
+{cat:"💰 Kinh doanh",emoji:"📦",v:"sell",p:"out",ipa:"/sɛl aʊt/",en:"To sell all available stock",vi:"Bán hết hàng",badge:"Bán hết",ex:"The concert tickets <strong>sold out</strong> in minutes.",exvi:"Vé hòa nhạc đã bán hết trong vài phút.",tip:"Sell out (informal) = phản bội lý tưởng của mình"},
+{cat:"💰 Kinh doanh",emoji:"🤑",v:"pay",p:"off",ipa:"/peɪ ɒf/",en:"To be worth the effort; to repay a debt",vi:"Có kết quả xứng đáng; trả hết nợ",badge:"Đáng công",ex:"All her hard work finally <strong>paid off</strong>.",exvi:"Mọi nỗ lực của cô ấy cuối cùng đã được đền đáp.",tip:"Pay off a loan = trả hết khoản vay"},
+{cat:"💰 Kinh doanh",emoji:"📑",v:"back",p:"up",ipa:"/bæk ʌp/",en:"To support; to make a copy of data",vi:"Hỗ trợ; sao lưu dữ liệu",badge:"Hỗ trợ",ex:"Always <strong>back up</strong> your files to the cloud.",exvi:"Luôn sao lưu tệp của bạn lên đám mây.",tip:"Back someone up = ủng hộ lập trường của ai"},
+{cat:"💰 Kinh doanh",emoji:"🚀",v:"start",p:"up",ipa:"/stɑːt ʌp/",en:"To launch a new business or project",vi:"Khởi động doanh nghiệp mới",badge:"Khởi động",ex:"They <strong>started up</strong> a tech company last year.",exvi:"Họ khởi động một công ty công nghệ năm ngoái.",tip:"Startup (n) = doanh nghiệp khởi nghiệp"},
+{cat:"💰 Kinh doanh",emoji:"🤝",v:"buy",p:"out",ipa:"/baɪ aʊt/",en:"To purchase someone's share in a business",vi:"Mua lại cổ phần của ai",badge:"Mua lại",ex:"The larger firm decided to <strong>buy out</strong> its competitor.",exvi:"Công ty lớn hơn quyết định mua lại đối thủ.",tip:"Buyout (n) = thương vụ mua lại"},
+{cat:"💰 Kinh doanh",emoji:"🏦",v:"bail",p:"out",ipa:"/beɪl aʊt/",en:"To rescue from financial difficulty",vi:"Cứu trợ tài chính, giải cứu khỏi khó khăn",badge:"Cứu trợ",ex:"The government had to <strong>bail out</strong> the bank.",exvi:"Chính phủ phải cứu trợ ngân hàng.",tip:"Bail someone out (of jail) = đóng tiền bảo lãnh"},
+{cat:"💰 Kinh doanh",emoji:"📊",v:"account",p:"for",ipa:"/əˈkaʊnt fɔː/",en:"To explain or be responsible for",vi:"Giải thích; chiếm tỷ lệ (trong thống kê)",badge:"Giải thích",ex:"Can you <strong>account for</strong> this discrepancy?",exvi:"Bạn có thể giải thích sự chênh lệch này không?",tip:"Sales account for 60% of revenue = doanh số chiếm 60%"},
+{cat:"💰 Kinh doanh",emoji:"⬆️",v:"mark",p:"up",ipa:"/mɑːk ʌp/",en:"To increase the price of something",vi:"Tăng giá, đánh dấu giá cao hơn",badge:"Tăng giá",ex:"They <strong>mark up</strong> the products by 40%.",exvi:"Họ tăng giá sản phẩm lên 40%.",tip:"Markup (n) = mức tăng giá / lợi nhuận gộp"},
+
+// ── EDUCATION ──
+{cat:"📚 Học tập",emoji:"📖",v:"look",p:"over",ipa:"/lʊk ˈəʊvə/",en:"To examine or review briefly",vi:"Xem qua, xem xét lướt qua",badge:"Xem qua",ex:"Could you <strong>look over</strong> my essay before I submit it?",exvi:"Bạn có thể xem qua bài luận của tôi trước khi tôi nộp không?",tip:"Look over # Go over: nhẹ hơn, ít kỹ lưỡng hơn"},
+{cat:"📚 Học tập",emoji:"✏️",v:"write",p:"down",ipa:"/raɪt daʊn/",en:"To record something in writing",vi:"Ghi lại bằng chữ viết",badge:"Ghi lại",ex:"<strong>Write down</strong> everything important from the lecture.",exvi:"Ghi lại mọi thứ quan trọng từ bài giảng.",tip:"Jot down = ghi nhanh"},
+{cat:"📚 Học tập",emoji:"🔄",v:"go",p:"back over",ipa:"/ɡəʊ bæk ˈəʊvə/",en:"To review material again",vi:"Ôn lại tài liệu",badge:"Ôn lại",ex:"You should <strong>go back over</strong> Chapter 3 before the test.",exvi:"Bạn nên ôn lại Chương 3 trước kỳ kiểm tra.",tip:"Tương tự: review / revise"},
+{cat:"📚 Học tập",emoji:"🏫",v:"drop",p:"out",ipa:"/drɒp aʊt/",en:"To quit school or a course",vi:"Bỏ học, bỏ ngang khóa học",badge:"Bỏ học",ex:"He <strong>dropped out</strong> of university to start a business.",exvi:"Anh ấy bỏ học đại học để khởi nghiệp.",tip:"Dropout (n) = người bỏ học"},
+{cat:"📚 Học tập",emoji:"📝",v:"hand",p:"in",ipa:"/hænd ɪn/",en:"To submit work to a teacher",vi:"Nộp bài cho giáo viên",badge:"Nộp bài",ex:"Please <strong>hand in</strong> your assignments by 5 PM.",exvi:"Hãy nộp bài tập trước 5 giờ chiều.",tip:"Tương tự: turn in (AmE), submit"},
+{cat:"📚 Học tập",emoji:"📤",v:"give",p:"out",ipa:"/ɡɪv aʊt/",en:"To distribute to many people",vi:"Phát ra, phân phát",badge:"Phát ra",ex:"The teacher <strong>gave out</strong> the test papers.",exvi:"Giáo viên phát đề kiểm tra.",tip:"Give out cũng = phát ra ánh sáng/âm thanh"},
+{cat:"📚 Học tập",emoji:"🎓",v:"catch",p:"up",ipa:"/kætʃ ʌp/",en:"To reach the same level as others",vi:"Theo kịp, bắt kịp",badge:"Bắt kịp",ex:"I missed a week and need to <strong>catch up</strong>.",exvi:"Tôi nghỉ một tuần và cần phải bắt kịp.",tip:"Catch up with/on = theo kịp ai/cái gì"},
+{cat:"📚 Học tập",emoji:"📌",v:"keep",p:"up with",ipa:"/kiːp ʌp wɪð/",en:"To stay at the same pace",vi:"Theo kịp tiến độ, không bị tụt hậu",badge:"Theo kịp",ex:"It's hard to <strong>keep up with</strong> all the reading.",exvi:"Thật khó để theo kịp tất cả tài liệu đọc.",tip:"Keep up (with the Joneses) = không thua kém người khác"},
+{cat:"📚 Học tập",emoji:"✅",v:"sum",p:"up",ipa:"/sʌm ʌp/",en:"To give a brief overview or conclusion",vi:"Tóm tắt, đúc kết",badge:"Tóm tắt",ex:"To <strong>sum up</strong>, the experiment was a success.",exvi:"Tóm lại, thí nghiệm đã thành công.",tip:"Sum-up (n) = bản tóm tắt"},
+{cat:"📚 Học tập",emoji:"🔠",v:"spell",p:"out",ipa:"/spɛl aʊt/",en:"To explain in detail; to spell letter by letter",vi:"Giải thích rõ ràng; đánh vần",badge:"Giải thích",ex:"Do I have to <strong>spell it out</strong> for you?",exvi:"Tôi phải giải thích rõ từng chút cho bạn không?",tip:"Dùng khi ai đó không chịu hiểu rõ ràng"},
+
+// ── PROBLEM / DECISION ──
+{cat:"⚖️ Quyết định",emoji:"🙅",v:"give",p:"up",ipa:"/ɡɪv ʌp/",en:"To stop trying or doing",vi:"Từ bỏ, ngừng cố gắng",badge:"Từ bỏ",ex:"Never <strong>give up</strong> on your dreams.",exvi:"Đừng bao giờ từ bỏ ước mơ của bạn.",tip:"Give up on someone = mất hy vọng vào ai"},
+{cat:"⚖️ Quyết định",emoji:"🛑",v:"call",p:"off",ipa:"/kɔːl ɒf/",en:"To cancel a planned event",vi:"Hủy bỏ sự kiện đã lên kế hoạch",badge:"Hủy bỏ",ex:"They <strong>called off</strong> the meeting due to the storm.",exvi:"Họ hủy cuộc họp do bão.",tip:"Tân ngữ có thể đặt giữa hoặc sau"},
+{cat:"⚖️ Quyết định",emoji:"🧐",v:"weigh",p:"up",ipa:"/weɪ ʌp/",en:"To carefully consider options",vi:"Cân nhắc kỹ lưỡng các lựa chọn",badge:"Cân nhắc",ex:"I'm still <strong>weighing up</strong> the pros and cons.",exvi:"Tôi vẫn đang cân nhắc ưu và nhược điểm.",tip:"Weigh up (BrE) / Weigh (AmE)"},
+{cat:"⚖️ Quyết định",emoji:"😓",v:"back",p:"down",ipa:"/bæk daʊn/",en:"To give up a position or argument",vi:"Rút lui, nhượng bộ lập trường",badge:"Nhượng bộ",ex:"He refused to <strong>back down</strong> from his position.",exvi:"Anh ấy từ chối nhượng bộ lập trường của mình.",tip:"Back down ≠ Back off: back off = lùi lại (vật lý / ngừng quấy rối)"},
+{cat:"⚖️ Quyết định",emoji:"✋",v:"opt",p:"out",ipa:"/ɒpt aʊt/",en:"To choose not to participate",vi:"Chọn không tham gia",badge:"Rút khỏi",ex:"She decided to <strong>opt out</strong> of the training.",exvi:"Cô ấy quyết định không tham gia khóa đào tạo.",tip:"Opt in = chọn tham gia"},
+{cat:"⚖️ Quyết định",emoji:"🧩",v:"sort",p:"out",ipa:"/sɔːt aʊt/",en:"To resolve a problem or organize",vi:"Giải quyết vấn đề, sắp xếp",badge:"Giải quyết",ex:"We need to <strong>sort out</strong> this mess.",exvi:"Chúng ta cần giải quyết mớ hỗn độn này.",tip:"Sort yourself out = tự tổ chức / ổn định bản thân"},
+{cat:"⚖️ Quyết định",emoji:"🏳️",v:"give",p:"in",ipa:"/ɡɪv ɪn/",en:"To surrender or yield to pressure",vi:"Chịu thua, khuất phục trước áp lực",badge:"Chịu thua",ex:"After much arguing, he finally <strong>gave in</strong>.",exvi:"Sau nhiều tranh cãi, anh ấy cuối cùng đã chịu thua.",tip:"Give in to temptation = chiều theo cám dỗ"},
+{cat:"⚖️ Quyết định",emoji:"🎯",v:"go",p:"ahead",ipa:"/ɡəʊ əˈhɛd/",en:"To proceed with a plan",vi:"Tiến hành, thực hiện kế hoạch",badge:"Tiến hành",ex:"<strong>Go ahead</strong> and start without me.",exvi:"Cứ tiến hành đi, đừng đợi tôi.",tip:"Go ahead! = Cứ tự nhiên! (cho phép ai làm gì)"},
+{cat:"⚖️ Quyết định",emoji:"⚡",v:"act",p:"on",ipa:"/ækt ɒn/",en:"To take action based on advice/info",vi:"Hành động dựa trên lời khuyên/thông tin",badge:"Hành động",ex:"You should <strong>act on</strong> your doctor's advice.",exvi:"Bạn nên hành động theo lời khuyên của bác sĩ.",tip:"Act on intuition = hành động theo trực giác"},
+{cat:"⚖️ Quyết định",emoji:"🔙",v:"go",p:"back on",ipa:"/ɡəʊ bæk ɒn/",en:"To fail to keep a promise",vi:"Nuốt lời, vi phạm lời hứa",badge:"Nuốt lời",ex:"He <strong>went back on</strong> his promise.",exvi:"Anh ấy đã nuốt lời hứa của mình.",tip:"Go back on your word = phản bội lời nói của mình"},
+
+// ── CHANGE / PROGRESS ──
+{cat:"🔄 Thay đổi",emoji:"🌱",v:"take",p:"on",ipa:"/teɪk ɒn/",en:"To accept a challenge or responsibility",vi:"Nhận lấy trách nhiệm / thách thức",badge:"Tiếp nhận",ex:"She <strong>took on</strong> too much work at once.",exvi:"Cô ấy đã nhận quá nhiều việc cùng một lúc.",tip:"Take on employees = tuyển nhân viên"},
+{cat:"🔄 Thay đổi",emoji:"🐛",v:"turn",p:"into",ipa:"/tɜːn ˈɪntə/",en:"To transform into something else",vi:"Biến thành, chuyển hóa thành",badge:"Biến thành",ex:"The caterpillar <strong>turns into</strong> a butterfly.",exvi:"Sâu bướm biến thành con bướm.",tip:"Turn into (= become) / Turn something into (= transform)"},
+{cat:"🔄 Thay đổi",emoji:"⬆️",v:"step",p:"up",ipa:"/stɛp ʌp/",en:"To increase effort or take a higher role",vi:"Nỗ lực hơn; tiến lên vị trí cao hơn",badge:"Nỗ lực hơn",ex:"It's time to <strong>step up</strong> your game.",exvi:"Đã đến lúc bạn phải nỗ lực hơn.",tip:"Step up (to the plate) = sẵn sàng đảm nhận thách thức"},
+{cat:"🔄 Thay đổi",emoji:"📉",v:"fall",p:"apart",ipa:"/fɔːl əˈpɑːt/",en:"To collapse or disintegrate",vi:"Sụp đổ, tan vỡ",badge:"Tan vỡ",ex:"Their marriage began to <strong>fall apart</strong>.",exvi:"Cuộc hôn nhân của họ bắt đầu tan vỡ.",tip:"Fall apart at the seams = tan rã hoàn toàn"},
+{cat:"🔄 Thay đổi",emoji:"🔨",v:"break",p:"down",ipa:"/breɪk daʊn/",en:"To stop functioning; to analyze in detail",vi:"Hỏng hóc; phân tích chi tiết",badge:"Hỏng/Phân tích",ex:"My car <strong>broke down</strong> on the highway.",exvi:"Xe tôi bị hỏng trên đường cao tốc.",tip:"Break it down = giải thích từng phần"},
+{cat:"🔄 Thay đổi",emoji:"🌊",v:"wipe",p:"out",ipa:"/waɪp aʊt/",en:"To destroy completely",vi:"Xóa sổ, tiêu diệt hoàn toàn",badge:"Tiêu diệt",ex:"The tsunami <strong>wiped out</strong> the coastal village.",exvi:"Sóng thần xóa sổ ngôi làng ven biển.",tip:"Wiped out (informal) = kiệt sức hoàn toàn"},
+{cat:"🔄 Thay đổi",emoji:"🏗️",v:"build",p:"up",ipa:"/bɪld ʌp/",en:"To develop or increase gradually",vi:"Xây dựng dần dần, phát triển",badge:"Xây dựng",ex:"She has <strong>built up</strong> a solid reputation.",exvi:"Cô ấy đã xây dựng được danh tiếng vững chắc.",tip:"Build-up (n) = sự tích lũy / giai đoạn chuẩn bị"},
+{cat:"🔄 Thay đổi",emoji:"🌤️",v:"clear",p:"up",ipa:"/klɪər ʌp/",en:"To become clear; to clean; to resolve",vi:"Trời quang; dọn sạch; giải quyết",badge:"Giải quyết",ex:"The misunderstanding was quickly <strong>cleared up</strong>.",exvi:"Sự hiểu lầm đã được giải quyết nhanh chóng.",tip:"Ba nghĩa: thời tiết / dọn dẹp / giải thích"},
+{cat:"🔄 Thay đổi",emoji:"🔋",v:"wear",p:"out",ipa:"/weər aʊt/",en:"To become damaged through use; to tire",vi:"Mòn cũ; kiệt sức",badge:"Kiệt sức",ex:"Running a marathon completely <strong>wore her out</strong>.",exvi:"Chạy marathon làm cô ấy kiệt sức hoàn toàn.",tip:"Worn out = đã cũ / đã kiệt sức"},
+{cat:"🔄 Thay đổi",emoji:"🎨",v:"spruce",p:"up",ipa:"/spruːs ʌp/",en:"To make something look better",vi:"Làm đẹp hơn, tân trang",badge:"Tân trang",ex:"We need to <strong>spruce up</strong> the office.",exvi:"Chúng ta cần tân trang lại văn phòng.",tip:"Informal; cũng dùng cho ngoại hình cá nhân"},
+
+// ── APPEARANCE / DESCRIBING ──
+{cat:"👁️ Mô tả",emoji:"🎭",v:"dress",p:"up",ipa:"/drɛs ʌp/",en:"To wear formal or costume clothes",vi:"Ăn mặc trang trọng hoặc hóa trang",badge:"Hóa trang",ex:"The kids <strong>dressed up</strong> as superheroes for Halloween.",exvi:"Bọn trẻ hóa trang thành siêu anh hùng dịp Halloween.",tip:"Dress down = mặc giản dị hơn"},
+{cat:"👁️ Mô tả",emoji:"🧳",v:"pack",p:"up",ipa:"/pæk ʌp/",en:"To gather belongings; to stop working",vi:"Thu dọn đồ đạc; ngừng làm việc",badge:"Thu dọn",ex:"Let's <strong>pack up</strong> and go home.",exvi:"Hãy thu dọn và về nhà thôi.",tip:"Pack it in (BrE) = bỏ cuộc / ngừng làm"},
+{cat:"👁️ Mô tả",emoji:"🎨",v:"show",p:"off",ipa:"/ʃəʊ ɒf/",en:"To display proudly; to boast",vi:"Khoe khoang, trưng bày để gây ấn tượng",badge:"Khoe khoang",ex:"He loves to <strong>show off</strong> his new car.",exvi:"Anh ấy thích khoe chiếc xe mới.",tip:"Showoff (n) = người hay khoe khoang"},
+{cat:"👁️ Mô tả",emoji:"📷",v:"zoom",p:"in",ipa:"/zuːm ɪn/",en:"To magnify; to focus closely on",vi:"Phóng to; tập trung vào chi tiết",badge:"Phóng to",ex:"<strong>Zoom in</strong> on that detail in the photo.",exvi:"Phóng to vào chi tiết đó trong ảnh.",tip:"Zoom out = thu nhỏ / nhìn bức tranh toàn cảnh"},
+{cat:"👁️ Mô tả",emoji:"🕯️",v:"stand",p:"out",ipa:"/stænd aʊt/",en:"To be noticeable or distinctive",vi:"Nổi bật, khác biệt so với phần còn lại",badge:"Nổi bật",ex:"Her red dress really <strong>stood out</strong> in the crowd.",exvi:"Chiếc váy đỏ của cô ấy thực sự nổi bật trong đám đông.",tip:"Standout (adj/n) = nổi trội, xuất sắc"},
+{cat:"👁️ Mô tả",emoji:"🪞",v:"look",p:"like",ipa:"/lʊk laɪk/",en:"To resemble; to seem likely",vi:"Trông giống; có vẻ như",badge:"Trông giống",ex:"You <strong>look like</strong> your mother.",exvi:"Bạn trông giống mẹ bạn.",tip:"It looks like (it will rain) = có vẻ như (trời sắp mưa)"},
+{cat:"👁️ Mô tả",emoji:"✨",v:"light",p:"up",ipa:"/laɪt ʌp/",en:"To become bright; to show excitement",vi:"Sáng lên; trở nên hứng khởi",badge:"Sáng lên",ex:"Her face <strong>lit up</strong> when she saw the puppy.",exvi:"Mặt cô ấy sáng lên khi nhìn thấy chú chó con.",tip:"Light up a room = tỏa sáng, làm không khí vui hơn"},
+{cat:"👁️ Mô tả",emoji:"🔊",v:"turn",p:"up",ipa:"/tɜːn ʌp/",en:"To increase volume; to arrive unexpectedly",vi:"Vặn to hơn; xuất hiện bất ngờ",badge:"Tăng âm",ex:"<strong>Turn up</strong> the music — I love this song!",exvi:"Vặn nhạc to lên — tôi yêu bài này!",tip:"She turned up late = cô ấy xuất hiện muộn"},
+{cat:"👁️ Mô tả",emoji:"🔉",v:"turn",p:"down",ipa:"/tɜːn daʊn/",en:"To reduce volume; to reject",vi:"Vặn nhỏ; từ chối",badge:"Từ chối",ex:"He <strong>turned down</strong> the job offer.",exvi:"Anh ấy từ chối lời mời công việc.",tip:"Turn down (volume) vs Turn down (offer)"},
+
+// ── HEALTH / BODY ──
+{cat:"🏥 Sức khỏe",emoji:"🤒",v:"come",p:"down with",ipa:"/kʌm daʊn wɪð/",en:"To become ill with something",vi:"Bị mắc bệnh gì đó",badge:"Bị bệnh",ex:"I think I'm <strong>coming down with</strong> a cold.",exvi:"Tôi nghĩ mình đang bị cảm.",tip:"Informal; dùng cho bệnh nhẹ như cảm, cúm"},
+{cat:"🏥 Sức khỏe",emoji:"💪",v:"work",p:"out",ipa:"/wɜːk aʊt/",en:"To exercise",vi:"Tập thể dục",badge:"Tập gym",ex:"She <strong>works out</strong> every morning before work.",exvi:"Cô ấy tập thể dục mỗi sáng trước khi đi làm.",tip:"Workout (n) = buổi tập thể dục"},
+{cat:"🏥 Sức khỏe",emoji:"🛌",v:"lie",p:"down",ipa:"/laɪ daʊn/",en:"To recline or rest",vi:"Nằm xuống nghỉ",badge:"Nằm nghỉ",ex:"I need to <strong>lie down</strong> — I have a headache.",exvi:"Tôi cần nằm xuống — tôi bị đau đầu.",tip:"Lie down ≠ Lay down: lay = đặt cái gì xuống"},
+{cat:"🏥 Sức khỏe",emoji:"🩺",v:"check",p:"up on",ipa:"/tʃɛk ʌp ɒn/",en:"To verify condition or status",vi:"Kiểm tra tình trạng ai/cái gì",badge:"Kiểm tra",ex:"The doctor will <strong>check up on</strong> you tomorrow.",exvi:"Bác sĩ sẽ kiểm tra tình trạng của bạn vào ngày mai.",tip:"Checkup (n) = cuộc khám sức khỏe"},
+{cat:"🏥 Sức khỏe",emoji:"🌡️",v:"fight",p:"off",ipa:"/faɪt ɒf/",en:"To resist illness or attack",vi:"Chống lại bệnh tật hoặc tấn công",badge:"Chống lại",ex:"Her immune system helped her <strong>fight off</strong> the virus.",exvi:"Hệ miễn dịch giúp cô ấy chống lại virus.",tip:"Fight off = ngăn chặn không cho xâm nhập"},
+{cat:"🏥 Sức khỏe",emoji:"🚑",v:"pass",p:"out",ipa:"/pɑːs aʊt/",en:"To faint or lose consciousness",vi:"Ngất xỉu, mất ý thức",badge:"Ngất xỉu",ex:"He <strong>passed out</strong> from the heat.",exvi:"Anh ấy ngất xỉu vì nóng.",tip:"Pass out cũng = phân phát: pass out flyers"},
+{cat:"🏥 Sức khỏe",emoji:"🔄",v:"get",p:"over",ipa:"/ɡɛt ˈəʊvə/",en:"To recover from illness or difficulty",vi:"Hồi phục sau bệnh hoặc khó khăn",badge:"Hồi phục",ex:"It took weeks to <strong>get over</strong> the flu.",exvi:"Phải mất vài tuần để hồi phục sau cơn cúm.",tip:"Get over (someone) = quên được ai"},
+{cat:"🏥 Sức khỏe",emoji:"💊",v:"keep",p:"down",ipa:"/kiːp daʊn/",en:"To not vomit food taken",vi:"Không nôn ra, giữ thức ăn trong bụng",badge:"Không nôn",ex:"She couldn't <strong>keep anything down</strong> after the surgery.",exvi:"Cô ấy không thể giữ bất cứ thứ gì trong bụng sau phẫu thuật.",tip:"Can't keep food down = triệu chứng nôn mửa nghiêm trọng"},
+{cat:"🏥 Sức khỏe",emoji:"🏃",v:"warm",p:"up",ipa:"/wɔːm ʌp/",en:"To prepare the body for exercise",vi:"Khởi động, làm nóng cơ thể",badge:"Khởi động",ex:"Always <strong>warm up</strong> before a run.",exvi:"Luôn khởi động trước khi chạy.",tip:"Warmup (n) = bài khởi động"},
+{cat:"🏥 Sức khỏe",emoji:"😴",v:"burn",p:"out",ipa:"/bɜːn aʊt/",en:"To exhaust due to overwork",vi:"Kiệt sức do làm việc quá sức",badge:"Kiệt sức",ex:"Working 80 hours a week will <strong>burn you out</strong>.",exvi:"Làm việc 80 giờ mỗi tuần sẽ làm bạn kiệt sức.",tip:"Burnout (n) = hội chứng kiệt sức"},
+
+// ── TRAVEL / PLACES ──
+{cat:"✈️ Du lịch",emoji:"🧳",v:"check",p:"out",ipa:"/tʃɛk aʊt/",en:"To leave a hotel; to investigate",vi:"Trả phòng khách sạn; kiểm tra",badge:"Trả phòng",ex:"We need to <strong>check out</strong> by 11 AM.",exvi:"Chúng ta cần trả phòng trước 11 giờ sáng.",tip:"Check it out! = Xem thử đi! (hào hứng về gì đó)"},
+{cat:"✈️ Du lịch",emoji:"🗺️",v:"get",p:"around",ipa:"/ɡɛt əˈraʊnd/",en:"To travel or move in a place",vi:"Di chuyển quanh khu vực",badge:"Di chuyển",ex:"It's easy to <strong>get around</strong> the city by metro.",exvi:"Thật dễ di chuyển quanh thành phố bằng tàu điện ngầm.",tip:"Get around (a rule) = lách luật / tìm cách tránh"},
+{cat:"✈️ Du lịch",emoji:"🏕️",v:"head",p:"out",ipa:"/hɛd aʊt/",en:"To leave; to start a journey",vi:"Lên đường, rời đi",badge:"Lên đường",ex:"Let's <strong>head out</strong> before it gets too hot.",exvi:"Hãy lên đường trước khi trời quá nóng.",tip:"Head out = informal cho start out / leave"},
+{cat:"✈️ Du lịch",emoji:"🏨",v:"stay",p:"over",ipa:"/steɪ ˈəʊvə/",en:"To sleep at someone else's place",vi:"Ngủ lại nhà người khác",badge:"Ngủ lại",ex:"You can <strong>stay over</strong> at our place tonight.",exvi:"Bạn có thể ngủ lại nhà chúng tôi tối nay.",tip:"Sleepover (n) = buổi tối ngủ lại nhà bạn bè"},
+{cat:"✈️ Du lịch",emoji:"🚢",v:"see",p:"off",ipa:"/siː ɒf/",en:"To say goodbye to someone departing",vi:"Tiễn đưa ai đó lên đường",badge:"Tiễn đưa",ex:"We went to the airport to <strong>see her off</strong>.",exvi:"Chúng tôi ra sân bay để tiễn cô ấy.",tip:"Send off = tiễn (thường trang trọng hơn)"},
+{cat:"✈️ Du lịch",emoji:"🚗",v:"stop",p:"over",ipa:"/stɒp ˈəʊvə/",en:"To make a brief stop during a journey",vi:"Dừng chân ngắn trong chuyến đi",badge:"Dừng chân",ex:"We <strong>stopped over</strong> in Dubai for a few hours.",exvi:"Chúng tôi dừng chân ở Dubai vài tiếng.",tip:"Stopover (n) = điểm dừng chân"},
+{cat:"✈️ Du lịch",emoji:"🏠",v:"get",p:"back",ipa:"/ɡɛt bæk/",en:"To return to a place",vi:"Trở về, về lại",badge:"Trở về",ex:"When do you <strong>get back</strong> from your trip?",exvi:"Bạn trở về từ chuyến đi khi nào?",tip:"Get back to doing something = tiếp tục làm gì"},
+{cat:"✈️ Du lịch",emoji:"🌍",v:"go",p:"abroad",ipa:"/ɡəʊ əˈbrɔːd/",en:"To travel to a foreign country",vi:"Đi nước ngoài",badge:"Đi nước ngoài",ex:"She plans to <strong>go abroad</strong> to study medicine.",exvi:"Cô ấy dự định đi nước ngoài học y.",tip:"Abroad = ở/đến nước ngoài (không cần 'to')"},
+{cat:"✈️ Du lịch",emoji:"🎒",v:"pack",p:"up",ipa:"/pæk ʌp/",en:"To gather belongings for travel",vi:"Sắp xếp đồ đạc để đi",badge:"Sắp xếp",ex:"I need to <strong>pack up</strong> my suitcase tonight.",exvi:"Tôi cần sắp xếp vali tối nay.",tip:"Pack light = mang ít đồ"},
+{cat:"✈️ Du lịch",emoji:"🛂",v:"pass",p:"through",ipa:"/pɑːs θruː/",en:"To go through a place without stopping long",vi:"Đi qua nơi nào đó mà không dừng lâu",badge:"Đi qua",ex:"We <strong>passed through</strong> several cities on the drive.",exvi:"Chúng tôi đi qua nhiều thành phố trên đường.",tip:"Pass through security = qua kiểm tra an ninh"},
+
+// ── MISC / COMMON ──
+{cat:"🌐 Đa dụng",emoji:"🔑",v:"keep",p:"up",ipa:"/kiːp ʌp/",en:"To maintain pace; to continue doing",vi:"Duy trì; tiếp tục",badge:"Duy trì",ex:"<strong>Keep up</strong> the great work — you're doing amazing!",exvi:"Tiếp tục phát huy — bạn đang làm rất tốt!",tip:"Keep up appearances = giữ bề ngoài"},
+{cat:"🌐 Đa dụng",emoji:"🎁",v:"give",p:"away",ipa:"/ɡɪv əˈweɪ/",en:"To give for free; to reveal a secret",vi:"Tặng miễn phí; tiết lộ bí mật",badge:"Tiết lộ",ex:"Don't <strong>give away</strong> the ending of the movie!",exvi:"Đừng tiết lộ cái kết của bộ phim!",tip:"Giveaway (n) = quà tặng / điều tự bộc lộ"},
+{cat:"🌐 Đa dụng",emoji:"🔄",v:"mix",p:"up",ipa:"/mɪks ʌp/",en:"To confuse one thing with another",vi:"Lẫn lộn, nhầm lẫn giữa hai thứ",badge:"Nhầm lẫn",ex:"I always <strong>mix up</strong> the twins.",exvi:"Tôi luôn nhầm lẫn hai đứa trẻ sinh đôi.",tip:"Mix-up (n) = sự nhầm lẫn, hiểu lầm"},
+{cat:"🌐 Đa dụng",emoji:"📋",v:"make",p:"out",ipa:"/meɪk aʊt/",en:"To understand; to claim; to succeed",vi:"Hiểu ra; tuyên bố; xoay xở",badge:"Hiểu ra",ex:"I can't <strong>make out</strong> what he's saying.",exvi:"Tôi không thể hiểu anh ấy đang nói gì.",tip:"Make out (informal) = hôn nhau / xoay xở"},
+{cat:"🌐 Đa dụng",emoji:"🧱",v:"add",p:"up",ipa:"/æd ʌp/",en:"To make sense; to total correctly",vi:"Có lý; cộng lại ra đúng",badge:"Có lý",ex:"Something doesn't <strong>add up</strong> about his story.",exvi:"Có gì đó trong câu chuyện của anh ấy không ổn.",tip:"Add up to = tổng cộng bằng"},
+{cat:"🌐 Đa dụng",emoji:"⬆️",v:"own",p:"up",ipa:"/əʊn ʌp/",en:"To admit responsibility or guilt",vi:"Thừa nhận trách nhiệm hoặc lỗi lầm",badge:"Thừa nhận",ex:"It's time to <strong>own up</strong> to your mistakes.",exvi:"Đã đến lúc thừa nhận lỗi lầm của bạn.",tip:"Man up / fess up / come clean = các cách nói tương tự"},
+{cat:"🌐 Đa dụng",emoji:"🏃",v:"catch",p:"on",ipa:"/kætʃ ɒn/",en:"To understand; to become popular",vi:"Hiểu ra; trở nên phổ biến",badge:"Hiểu ra",ex:"The new trend quickly <strong>caught on</strong>.",exvi:"Xu hướng mới nhanh chóng trở nên phổ biến.",tip:"Catch on (to) = bắt đầu hiểu"},
+{cat:"🌐 Đa dụng",emoji:"🌿",v:"end",p:"up",ipa:"/ɛnd ʌp/",en:"To eventually be in a situation",vi:"Rốt cuộc rơi vào tình huống nào đó",badge:"Rốt cuộc",ex:"We took the wrong road and <strong>ended up</strong> in a village.",exvi:"Chúng tôi đi nhầm đường và rốt cuộc đến một ngôi làng.",tip:"End up doing something = cuối cùng làm gì"},
+{cat:"🌐 Đa dụng",emoji:"🔛",v:"go",p:"on",ipa:"/ɡəʊ ɒn/",en:"To continue; to happen",vi:"Tiếp tục; xảy ra",badge:"Tiếp tục",ex:"What's <strong>going on</strong>? You look upset.",exvi:"Có chuyện gì vậy? Bạn trông có vẻ buồn.",tip:"Go on! = Tiếp tục đi! / Thật không! (ngạc nhiên)"},
+{cat:"🌐 Đa dụng",emoji:"🚫",v:"rule",p:"out",ipa:"/ruːl aʊt/",en:"To eliminate as a possibility",vi:"Loại bỏ khả năng, bác bỏ",badge:"Loại bỏ",ex:"We can't <strong>rule out</strong> the possibility of snow.",exvi:"Chúng ta không thể loại bỏ khả năng tuyết rơi.",tip:"Phổ biến trong tin tức và thảo luận pháp lý"},
+
+// ── TECHNOLOGY ──
+{cat:"💻 Công nghệ",emoji:"🔌",v:"plug",p:"in",ipa:"/plʌɡ ɪn/",en:"To connect to a power source",vi:"Cắm điện, kết nối nguồn điện",badge:"Cắm vào",ex:"<strong>Plug in</strong> your laptop before it dies.",exvi:"Hãy cắm sạc laptop trước khi nó hết pin.",tip:"Plugin (n) = tiện ích mở rộng phần mềm"},
+{cat:"💻 Công nghệ",emoji:"⬆️",v:"update",p:"to",ipa:"/ʌpˈdeɪt tuː/",en:"To install a newer version",vi:"Cập nhật lên phiên bản mới",badge:"Cập nhật",ex:"Have you <strong>updated to</strong> the latest version?",exvi:"Bạn đã cập nhật lên phiên bản mới nhất chưa?",tip:"Update / upgrade = nâng cấp phần mềm / hệ thống"},
+{cat:"💻 Công nghệ",emoji:"🔄",v:"log",p:"in",ipa:"/lɒɡ ɪn/",en:"To sign into a system or website",vi:"Đăng nhập vào hệ thống",badge:"Đăng nhập",ex:"You need to <strong>log in</strong> before accessing the files.",exvi:"Bạn cần đăng nhập trước khi truy cập các tệp.",tip:"Log out = đăng xuất; Log in / Sign in dùng thay nhau"},
+{cat:"💻 Công nghệ",emoji:"💾",v:"save",p:"as",ipa:"/seɪv æz/",en:"To save a file under a new name",vi:"Lưu tệp với tên khác",badge:"Lưu thành",ex:"<strong>Save it as</strong> a PDF before sending.",exvi:"Lưu thành PDF trước khi gửi.",tip:"Save as = tạo bản sao với tên / định dạng mới"},
+{cat:"💻 Công nghệ",emoji:"🖥️",v:"shut",p:"down",ipa:"/ʃʌt daʊn/",en:"To turn off a computer or system",vi:"Tắt máy tính hoặc hệ thống",badge:"Tắt máy",ex:"Remember to <strong>shut down</strong> your PC at the end of the day.",exvi:"Nhớ tắt máy tính vào cuối ngày.",tip:"Shutdown (n) = lần tắt máy / ngừng hoạt động"},
+{cat:"💻 Công nghệ",emoji:"📡",v:"connect",p:"to",ipa:"/kəˈnɛkt tuː/",en:"To link to a network or device",vi:"Kết nối đến mạng hoặc thiết bị",badge:"Kết nối",ex:"I can't <strong>connect to</strong> the Wi-Fi here.",exvi:"Tôi không thể kết nối Wi-Fi ở đây.",tip:"Connect with someone = kết nối về mặt cá nhân"},
+{cat:"💻 Công nghệ",emoji:"🔁",v:"reload",p:"—",ipa:"/ˌriːˈləʊd/",en:"To refresh a webpage",vi:"Tải lại trang web",badge:"Tải lại",ex:"<strong>Reload</strong> the page if it doesn't load.",exvi:"Tải lại trang nếu nó không hiển thị.",tip:"Refresh / reload đều dùng được"},
+{cat:"💻 Công nghệ",emoji:"🗑️",v:"delete",p:"—",ipa:"/dɪˈliːt/",en:"To permanently remove data",vi:"Xóa dữ liệu vĩnh viễn",badge:"Xóa",ex:"Did you <strong>delete</strong> those old files?",exvi:"Bạn đã xóa những tệp cũ đó chưa?",tip:"Delete vs Remove: delete = xóa hoàn toàn"},
+{cat:"💻 Công nghệ",emoji:"📤",v:"upload",p:"to",ipa:"/ˈʌpləʊd tuː/",en:"To send data to a server or cloud",vi:"Tải lên máy chủ hoặc đám mây",badge:"Tải lên",ex:"<strong>Upload</strong> your CV <strong>to</strong> the website.",exvi:"Tải CV của bạn lên trang web.",tip:"Upload ↔ Download"},
+{cat:"💻 Công nghệ",emoji:"🔋",v:"charge",p:"up",ipa:"/tʃɑːdʒ ʌp/",en:"To fully charge a battery",vi:"Sạc đầy pin",badge:"Sạc đầy",ex:"<strong>Charge up</strong> your phone before the trip.",exvi:"Sạc đầy điện thoại trước chuyến đi.",tip:"Fully charged = đã sạc đầy"},
+
+// ── NATURE / ENVIRONMENT ──
+{cat:"🌿 Thiên nhiên",emoji:"🌱",v:"grow",p:"out of",ipa:"/ɡrəʊ aʊt ɒv/",en:"To outgrow; to develop from",vi:"Lớn không còn vừa; phát triển từ",badge:"Vượt qua",ex:"He's <strong>grown out of</strong> his childish fears.",exvi:"Anh ấy đã vượt qua những nỗi sợ trẻ con.",tip:"Grow out of clothes = quần áo không còn vừa nữa"},
+{cat:"🌿 Thiên nhiên",emoji:"🌊",v:"wash",p:"away",ipa:"/wɒʃ əˈweɪ/",en:"To be carried off by water",vi:"Bị nước cuốn trôi",badge:"Cuốn trôi",ex:"The flood <strong>washed away</strong> several homes.",exvi:"Lũ lụt đã cuốn trôi một số ngôi nhà.",tip:"Washed away cũng nghĩa bóng = xóa bỏ đi"},
+{cat:"🌿 Thiên nhiên",emoji:"🔥",v:"burn",p:"down",ipa:"/bɜːn daʊn/",en:"To be destroyed by fire completely",vi:"Cháy rụi hoàn toàn",badge:"Cháy rụi",ex:"The old factory <strong>burned down</strong> last night.",exvi:"Nhà máy cũ đã cháy rụi đêm qua.",tip:"Burn down / Burn to the ground = cháy hoàn toàn"},
+{cat:"🌿 Thiên nhiên",emoji:"🌬️",v:"blow",p:"over",ipa:"/bləʊ ˈəʊvə/",en:"To be knocked down by wind; to pass",vi:"Bị gió thổi ngã; qua đi",badge:"Qua đi",ex:"The scandal will <strong>blow over</strong> in a few days.",exvi:"Vụ bê bối sẽ qua đi trong vài ngày.",tip:"Let it blow over = để mọi việc lắng xuống"},
+{cat:"🌿 Thiên nhiên",emoji:"💧",v:"dry",p:"up",ipa:"/draɪ ʌp/",en:"To become completely dry; to run out",vi:"Khô cạn; cạn kiệt nguồn cung",badge:"Khô cạn",ex:"The river has <strong>dried up</strong> due to drought.",exvi:"Dòng sông đã khô cạn vì hạn hán.",tip:"My inspiration dried up = cạn ý tưởng"},
+
+// ── FOOD / COOKING ──
+{cat:"🍳 Nấu ăn",emoji:"🥘",v:"heat",p:"up",ipa:"/hiːt ʌp/",en:"To warm food",vi:"Hâm nóng thức ăn",badge:"Hâm nóng",ex:"Just <strong>heat up</strong> the leftovers for dinner.",exvi:"Chỉ cần hâm nóng đồ ăn thừa cho bữa tối.",tip:"Heat things up (bóng) = làm căng thẳng thêm"},
+{cat:"🍳 Nấu ăn",emoji:"🍽️",v:"eat",p:"up",ipa:"/iːt ʌp/",en:"To eat all of something",vi:"Ăn hết, ăn sạch bóng",badge:"Ăn hết",ex:"<strong>Eat up</strong> your vegetables!",exvi:"Ăn hết rau đi nào!",tip:"Eat up cũng = tiêu tốn nhiều tài nguyên"},
+{cat:"🍳 Nấu ăn",emoji:"🧂",v:"add",p:"in",ipa:"/æd ɪn/",en:"To include an ingredient",vi:"Thêm vào (nguyên liệu)",badge:"Thêm vào",ex:"<strong>Add in</strong> the garlic and stir for two minutes.",exvi:"Thêm tỏi vào và khuấy trong hai phút.",tip:"Add in vs Add: 'add in' nhấn mạnh hành động"},
+{cat:"🍳 Nấu ăn",emoji:"🧊",v:"cool",p:"down",ipa:"/kuːl daʊn/",en:"To lower temperature of food",vi:"Để nguội, hạ nhiệt độ",badge:"Để nguội",ex:"Let the soup <strong>cool down</strong> before eating.",exvi:"Để súp nguội trước khi ăn.",tip:"Cool off = cũng dùng cho người / cảm xúc"},
+{cat:"🍳 Nấu ăn",emoji:"🍰",v:"cut",p:"up",ipa:"/kʌt ʌp/",en:"To cut into smaller pieces",vi:"Cắt thành từng miếng nhỏ",badge:"Cắt nhỏ",ex:"<strong>Cut up</strong> the vegetables before frying.",exvi:"Cắt nhỏ rau trước khi chiên.",tip:"Cut up (informal) = cảm thấy tổn thương sâu sắc"},
+
+// ── MONEY / SHOPPING ──
+{cat:"🛍️ Mua sắm",emoji:"💳",v:"pay",p:"for",ipa:"/peɪ fɔː/",en:"To give money in exchange for something",vi:"Trả tiền cho, mua",badge:"Trả tiền",ex:"I'll <strong>pay for</strong> dinner tonight.",exvi:"Tôi sẽ trả tiền bữa tối tối nay.",tip:"Pay for your mistakes = hứng chịu hậu quả"},
+{cat:"🛍️ Mua sắm",emoji:"📦",v:"wrap",p:"up",ipa:"/ræp ʌp/",en:"To cover in paper; to finish",vi:"Gói lại; kết thúc",badge:"Gói lại",ex:"Can you <strong>wrap up</strong> this gift for me?",exvi:"Bạn có thể gói quà này cho tôi không?",tip:"Wrap up a meeting = kết thúc cuộc họp"},
+{cat:"🛍️ Mua sắm",emoji:"🔖",v:"mark",p:"down",ipa:"/mɑːk daʊn/",en:"To reduce the price",vi:"Giảm giá",badge:"Giảm giá",ex:"Everything is <strong>marked down</strong> 30% this week.",exvi:"Tất cả mọi thứ được giảm 30% tuần này.",tip:"Markdown (n) = mức giảm giá"},
+{cat:"🛍️ Mua sắm",emoji:"🛒",v:"stock",p:"up",ipa:"/stɒk ʌp/",en:"To buy large quantities",vi:"Tích trữ, mua số lượng lớn",badge:"Tích trữ",ex:"We <strong>stocked up</strong> on canned goods before the typhoon.",exvi:"Chúng tôi tích trữ đồ hộp trước cơn bão.",tip:"Stock up on = tích trữ cái gì"},
+{cat:"🛍️ Mua sắm",emoji:"↩️",v:"take",p:"back",ipa:"/teɪk bæk/",en:"To return a purchased item",vi:"Trả lại hàng đã mua",badge:"Trả lại",ex:"The dress didn't fit so I <strong>took it back</strong>.",exvi:"Chiếc váy không vừa nên tôi trả lại.",tip:"Take back also = rút lại lời đã nói"},
+
+// ── SOCIAL / PEOPLE ──
+{cat:"🎭 Xã hội",emoji:"🎪",v:"show",p:"up",ipa:"/ʃəʊ ʌp/",en:"To arrive or appear",vi:"Xuất hiện, đến nơi",badge:"Xuất hiện",ex:"He never <strong>shows up</strong> on time.",exvi:"Anh ấy không bao giờ xuất hiện đúng giờ.",tip:"Show up = turn up = arrive (informal)"},
+{cat:"🎭 Xã hội",emoji:"😷",v:"pass",p:"on",ipa:"/pɑːs ɒn/",en:"To transmit; to relay information",vi:"Truyền (bệnh); chuyển thông tin",badge:"Truyền đạt",ex:"Please <strong>pass on</strong> my regards to your family.",exvi:"Vui lòng chuyển lời thăm của tôi đến gia đình bạn.",tip:"Pass on = decline (BrE): I'll pass on dessert."},
+{cat:"🎭 Xã hội",emoji:"🤚",v:"put",p:"forward",ipa:"/pʊt ˈfɔːwəd/",en:"To suggest or propose",vi:"Đề xuất, đưa ra ý kiến",badge:"Đề xuất",ex:"She <strong>put forward</strong> a new proposal.",exvi:"Cô ấy đề xuất một kế hoạch mới.",tip:"Put forward a candidate = đề cử ứng viên"},
+{cat:"🎭 Xã hội",emoji:"🙏",v:"count",p:"on",ipa:"/kaʊnt ɒn/",en:"To rely or depend on someone",vi:"Tin cậy, trông cậy vào ai",badge:"Tin cậy",ex:"You can always <strong>count on</strong> me.",exvi:"Bạn luôn có thể trông cậy vào tôi.",tip:"Count on ≠ count in: count me in = tôi tham gia"},
+{cat:"🎭 Xã hội",emoji:"🏆",v:"look",p:"up to",ipa:"/lʊk ʌp tuː/",en:"To respect and admire",vi:"Ngưỡng mộ và kính trọng",badge:"Kính trọng",ex:"Many students <strong>look up to</strong> their teachers.",exvi:"Nhiều học sinh ngưỡng mộ giáo viên của họ.",tip:"Ngược lại: look down on = coi thường"},
+{cat:"🎭 Xã hội",emoji:"😎",v:"hang",p:"out",ipa:"/hæŋ aʊt/",en:"To spend time relaxing with others",vi:"Tụ tập, dành thời gian vui chơi",badge:"Tụ tập",ex:"Let's <strong>hang out</strong> this weekend.",exvi:"Hãy tụ tập vào cuối tuần này nhé.",tip:"Hangout (n) = nơi hay lui tới / buổi gặp gỡ"},
+{cat:"🎭 Xã hội",emoji:"💌",v:"ask",p:"out",ipa:"/ɑːsk aʊt/",en:"To invite someone on a date",vi:"Rủ ai đó đi hẹn hò",badge:"Hẹn hò",ex:"He finally <strong>asked her out</strong>.",exvi:"Cuối cùng anh ấy cũng rủ cô ấy đi hẹn hò.",tip:"Ask out ≠ ask about"},
+{cat:"🎭 Xã hội",emoji:"🎊",v:"join",p:"in",ipa:"/dʒɔɪn ɪn/",en:"To participate in an activity",vi:"Tham gia, nhập vào",badge:"Tham gia",ex:"Feel free to <strong>join in</strong> the conversation.",exvi:"Thoải mái tham gia vào cuộc trò chuyện.",tip:"Join in = take part in (informal)"},
+
+// ── MANAGEMENT ──
+{cat:"📌 Quản lý",emoji:"📌",v:"pin",p:"down",ipa:"/pɪn daʊn/",en:"To identify precisely; to make commit",vi:"Xác định chính xác; buộc ai cam kết",badge:"Xác định",ex:"It's hard to <strong>pin down</strong> exactly when it started.",exvi:"Thật khó xác định chính xác khi nào nó bắt đầu.",tip:"Pin someone down = buộc ai phải nói rõ"},
+{cat:"📌 Quản lý",emoji:"🗂️",v:"file",p:"away",ipa:"/faɪl əˈweɪ/",en:"To store documents systematically",vi:"Lưu hồ sơ có hệ thống",badge:"Lưu hồ sơ",ex:"<strong>File away</strong> all contracts after signing.",exvi:"Lưu tất cả hợp đồng sau khi ký.",tip:"File away (in memory) = ghi nhớ để dùng sau"},
+{cat:"📌 Quản lý",emoji:"📅",v:"pencil",p:"in",ipa:"/ˈpɛnsəl ɪn/",en:"To provisionally schedule something",vi:"Đặt lịch tạm thời, chưa chắc chắn",badge:"Đặt tạm",ex:"Let's <strong>pencil in</strong> a meeting for Tuesday.",exvi:"Hãy đặt tạm một cuộc họp vào thứ Ba.",tip:"Pencil in = tentative; book = confirmed"},
+{cat:"📌 Quản lý",emoji:"🔄",v:"hand",p:"over",ipa:"/hænd ˈəʊvə/",en:"To transfer control or responsibility",vi:"Bàn giao quyền kiểm soát hoặc trách nhiệm",badge:"Bàn giao",ex:"He <strong>handed over</strong> the project to his successor.",exvi:"Anh ấy bàn giao dự án cho người kế nhiệm.",tip:"Handover (n) = quá trình bàn giao"},
+{cat:"📌 Quản lý",emoji:"📢",v:"roll",p:"out",ipa:"/rəʊl aʊt/",en:"To launch or introduce gradually",vi:"Triển khai, tung ra từ từ",badge:"Triển khai",ex:"The new software will be <strong>rolled out</strong> next month.",exvi:"Phần mềm mới sẽ được triển khai vào tháng tới.",tip:"Rollout (n) = kế hoạch triển khai"},
+{cat:"📌 Quản lý",emoji:"📋",v:"report",p:"back",ipa:"/rɪˈpɔːt bæk/",en:"To give feedback after investigating",vi:"Báo cáo lại sau khi điều tra",badge:"Báo cáo lại",ex:"Please <strong>report back</strong> after you've reviewed the data.",exvi:"Hãy báo cáo lại sau khi bạn xem xét dữ liệu.",tip:"Report back to someone = trả lời cho cấp trên"},
+{cat:"📌 Quản lý",emoji:"⚙️",v:"iron",p:"out",ipa:"/ˈaɪərn aʊt/",en:"To resolve small problems or details",vi:"Giải quyết các vấn đề nhỏ, làm mượt",badge:"Giải quyết",ex:"Let's <strong>iron out</strong> the remaining issues.",exvi:"Hãy giải quyết những vấn đề còn lại.",tip:"Iron out the wrinkles = xử lý các chi tiết"},
+{cat:"📌 Quản lý",emoji:"🏁",v:"wrap",p:"up",ipa:"/ræp ʌp/",en:"To bring to a conclusion",vi:"Kết thúc, hoàn tất",badge:"Kết thúc",ex:"Let's <strong>wrap up</strong> the meeting.",exvi:"Hãy kết thúc cuộc họp thôi.",tip:"Wrap up also = mặc ấm (weather)"},
+
+// ── SPORTS / GAMES ──
+{cat:"⚽ Thể thao",emoji:"🏅",v:"warm",p:"up",ipa:"/wɔːm ʌp/",en:"To prepare body for sport",vi:"Khởi động trước khi chơi thể thao",badge:"Khởi động",ex:"The team is <strong>warming up</strong> on the field.",exvi:"Đội đang khởi động trên sân.",tip:"Warmup (n) = bài tập khởi động"},
+{cat:"⚽ Thể thao",emoji:"🥊",v:"knock",p:"out",ipa:"/nɒk aʊt/",en:"To make unconscious; to eliminate",vi:"Hạ gục; loại khỏi cuộc thi",badge:"Hạ gục",ex:"He was <strong>knocked out</strong> in the third round.",exvi:"Anh ấy bị hạ gục trong hiệp thứ ba.",tip:"Knockout (n) = cú knock-out / người/thứ tuyệt vời"},
+{cat:"⚽ Thể thao",emoji:"🎯",v:"try",p:"out",ipa:"/traɪ aʊt/",en:"To test or audition",vi:"Thử nghiệm, tham gia tuyển chọn",badge:"Thử nghiệm",ex:"She's going to <strong>try out</strong> for the school team.",exvi:"Cô ấy sẽ tham gia tuyển chọn đội tuyển trường.",tip:"Tryout (n) = buổi thử nghiệm / tuyển chọn"},
+{cat:"⚽ Thể thao",emoji:"🏆",v:"come",p:"back",ipa:"/kʌm bæk/",en:"To return to competition after loss",vi:"Trở lại sau thất bại",badge:"Trở lại",ex:"The team <strong>came back</strong> from 2-0 down to win.",exvi:"Đội bóng trở lại từ thua 0-2 để giành chiến thắng.",tip:"Comeback (n) = sự trở lại ngoạn mục"},
+{cat:"⚽ Thể thao",emoji:"🔄",v:"switch",p:"off",ipa:"/swɪtʃ ɒf/",en:"To stop paying attention; to relax",vi:"Ngừng chú ý; thư giãn đầu óc",badge:"Thư giãn",ex:"After a stressful week, I just want to <strong>switch off</strong>.",exvi:"Sau một tuần căng thẳng, tôi chỉ muốn thư giãn đầu óc.",tip:"Switch off = turn off one's mind (informal)"},
+
+{cat:"🌐 Đa dụng",emoji:"🎭",v:"put",p:"up with",ipa:"/pʊt ʌp wɪð/",en:"To tolerate something unpleasant",vi:"Chịu đựng, chấp nhận điều khó chịu",badge:"Chịu đựng",ex:"I cant <strong>put up with</strong> this noise anymore.",exvi:"Tôi không thể chịu đựng tiếng ồn này.",tip:"Rất phổ biến để bày tỏ sự bực bội"},
+{cat:"🌐 Đa dụng",emoji:"💼",v:"take",p:"up",ipa:"/teɪk ʌp/",en:"To start a hobby; to occupy space or time",vi:"Bắt đầu sở thích; chiếm không gian/thời gian",badge:"Bắt đầu",ex:"She <strong>took up</strong> painting during lockdown.",exvi:"Cô ấy bắt đầu vẽ tranh trong thời gian phong tỏa.",tip:"It takes up too much space = chiếm quá nhiều chỗ"},
+{cat:"🌐 Đa dụng",emoji:"🔔",v:"go",p:"off",ipa:"/ɡəʊ ɒf/",en:"To sound an alarm; to explode; to expire",vi:"Chuông reo; nổ; hết hạn",badge:"Reo lên",ex:"My alarm <strong>went off</strong> at 5 AM.",exvi:"Đồng hồ báo thức của tôi reo lúc 5 giờ sáng.",tip:"Ba nghĩa: chuông/bom nổ/thức ăn hỏng"},
+{cat:"🌐 Đa dụng",emoji:"🏅",v:"live",p:"up to",ipa:"/lɪv ʌp tuː/",en:"To meet expectations or standards",vi:"Sống đúng với kỳ vọng hoặc tiêu chuẩn",badge:"Xứng đáng",ex:"The movie didnt <strong>live up to</strong> the hype.",exvi:"Bộ phim không xứng với kỳ vọng.",tip:"Live up to your potential = sống hết tiềm năng"},
+{cat:"🌐 Đa dụng",emoji:"🙈",v:"let",p:"on",ipa:"/lɛt ɒn/",en:"To reveal a secret",vi:"Tiết lộ bí mật",badge:"Tiết lộ",ex:"Dont <strong>let on</strong> that you knew.",exvi:"Đừng tiết lộ rằng bạn đã biết.",tip:"Let on = hint, reveal (informal)"},
+{cat:"🌐 Đa dụng",emoji:"🧲",v:"draw",p:"in",ipa:"/drɔː ɪn/",en:"To attract or involve someone",vi:"Thu hút, lôi cuốn vào",badge:"Thu hút",ex:"The story really <strong>drew me in</strong>.",exvi:"Câu chuyện thực sự lôi cuốn tôi.",tip:"Draw in = gradually attract attention"},
+];
+
+
+// ════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════
+let filteredCards = [...CARDS];
+let currentIndex = 0;
+let isFlipped = false;
+let mode = 'flashcard';
+let quizCorrect = 0, quizWrong = 0, quizTotal = 0;
+let currentQuizCard = null;
+let quizAnswered = false;
+
+// ════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════
+function init() {
+  buildCatList();
+  setCategory('all');
+}
+
+function buildCatList() {
+  const cats = {};
+  CARDS.forEach(c => { cats[c.cat] = (cats[c.cat] || 0) + 1; });
+  const list = document.getElementById('cat-list');
+  const allBtn = `<button class="cat-btn active" id="cat-all" onclick="setCategory('all')">
+    <span class="cat-emoji">🌐</span> Tất cả
+    <span class="cat-count">${CARDS.length}</span>
+  </button>`;
+  let html = allBtn;
+  Object.entries(cats).forEach(([cat, count]) => {
+    const id = cat.replace(/[^a-z]/gi, '');
+    const emoji = cat.match(/\p{Emoji}/u)?.[0] || '📌';
+    const label = cat.replace(/^\S+\s/, '');
+    html += `<button class="cat-btn" id="cat-${id}" onclick="setCategory('${cat}')">
+      <span class="cat-emoji">${emoji}</span> ${label}
+      <span class="cat-count">${count}</span>
+    </button>`;
+  });
+  list.innerHTML = html;
+}
+
+// ════════════════════════════════════════
+// CATEGORY / FILTER
+// ════════════════════════════════════════
+function setCategory(cat) {
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+  const id = cat === 'all' ? 'cat-all' : 'cat-' + cat.replace(/[^a-z]/gi, '');
+  const btn = document.getElementById(id);
+  if(btn) btn.classList.add('active');
+
+  filteredCards = cat === 'all' ? [...CARDS] : CARDS.filter(c => c.cat === cat);
+  const query = document.getElementById('search-input').value.trim().toLowerCase();
+  if(query) filteredCards = filteredCards.filter(c => 
+    (c.v+' '+c.p).toLowerCase().includes(query) || c.en.toLowerCase().includes(query) || c.vi.includes(query)
+  );
+
+  currentIndex = 0;
+  document.getElementById('stat-showing').textContent = filteredCards.length;
+  updateTitle(cat);
+  if(mode === 'flashcard') renderFlashcard();
+  else if(mode === 'grid') renderGrid();
+  else startQuiz();
+}
+
+function handleSearch() {
+  const query = document.getElementById('search-input').value.trim().toLowerCase();
+  const activeCat = document.querySelector('.cat-btn.active');
+  const catText = activeCat ? activeCat.textContent.trim() : 'Tất cả';
+  
+  let base = [...CARDS];
+  // find active category
+  const activeId = activeCat?.id;
+  if(activeId && activeId !== 'cat-all') {
+    const cat = CARDS.find(c => 'cat-'+c.cat.replace(/[^a-z]/gi,'') === activeId)?.cat;
+    if(cat) base = CARDS.filter(c => c.cat === cat);
+  }
+  
+  filteredCards = query 
+    ? base.filter(c => (c.v+' '+c.p).toLowerCase().includes(query) || c.en.toLowerCase().includes(query) || c.vi.includes(query))
+    : base;
+  
+  currentIndex = 0;
+  document.getElementById('stat-showing').textContent = filteredCards.length;
+  if(mode === 'flashcard') renderFlashcard();
+  else if(mode === 'grid') renderGrid();
+  else startQuiz();
+}
+
+function updateTitle(cat) {
+  const title = document.getElementById('topbar-title');
+  const sub = document.getElementById('topbar-sub');
+  title.textContent = cat === 'all' ? 'Tất cả Phrasal Verbs' : cat.replace(/^\S+\s/,'');
+  sub.textContent = `${filteredCards.length} từ · Nhấp thẻ để lật · Phím ← → Space`;
+}
+
+// ════════════════════════════════════════
+// FLASHCARD MODE
+// ════════════════════════════════════════
+function renderFlashcard() {
+  if(!filteredCards.length) return;
+  const c = filteredCards[currentIndex];
+  isFlipped = false;
+  document.getElementById('fc-card').classList.remove('flipped');
+
+  document.getElementById('fc-badge').textContent = c.cat.replace(/^\S+\s/,'');
+  document.getElementById('fc-num').textContent = `${String(currentIndex+1).padStart(2,'0')} / ${filteredCards.length}`;
+  document.getElementById('fc-emoji').textContent = c.emoji;
+  document.getElementById('fc-word').innerHTML = `${c.v} <em>${c.p}</em>`;
+  document.getElementById('fc-ipa').textContent = c.ipa;
+
+  document.getElementById('back-verb').innerHTML = `${c.v} <em>${c.p}</em>`;
+  document.getElementById('back-vtype').textContent = c.badge;
+  document.getElementById('back-def-en').textContent = c.en;
+  document.getElementById('back-def-vi').textContent = c.vi;
+  document.getElementById('back-ex-en').innerHTML = `"${c.ex}"`;
+  document.getElementById('back-ex-vi').textContent = `"${c.exvi}"`;
+  document.getElementById('back-tip').textContent = c.tip;
+
+  const pct = Math.round((currentIndex+1)/filteredCards.length*100);
+  document.getElementById('fc-progress-text').textContent = `${currentIndex+1} / ${filteredCards.length}`;
+  document.getElementById('fc-progress-pct').textContent = pct+'%';
+  document.getElementById('prog-fill').style.width = pct+'%';
+
+  document.getElementById('btn-prev').disabled = currentIndex === 0;
+  document.getElementById('btn-next').disabled = currentIndex === filteredCards.length-1;
+}
+
+function flipCard() {
+  isFlipped = !isFlipped;
+  document.getElementById('fc-card').classList.toggle('flipped', isFlipped);
+}
+
+function nextCard() { if(currentIndex < filteredCards.length-1) { currentIndex++; renderFlashcard(); } }
+function prevCard() { if(currentIndex > 0) { currentIndex--; renderFlashcard(); } }
+
+function speak(e) {
+  e && e.stopPropagation();
+  if(!filteredCards.length) return;
+  const c = filteredCards[currentIndex];
+  if('speechSynthesis' in window) {
+    const utt = new SpeechSynthesisUtterance(c.v+' '+c.p);
+    utt.lang = 'en-US'; utt.rate = 0.8;
+    speechSynthesis.cancel(); speechSynthesis.speak(utt);
+  }
+}
+
+// ════════════════════════════════════════
+// GRID MODE
+// ════════════════════════════════════════
+function renderGrid() {
+  const grid = document.getElementById('word-grid');
+  document.getElementById('grid-sub').textContent = `${filteredCards.length} phrasal verbs · Nhấp để xem chi tiết`;
+  if(!filteredCards.length) {
+    grid.innerHTML = '<div class="empty-state"><div class="e-emoji">🔍</div><h3>Không tìm thấy kết quả</h3><p>Thử tìm kiếm với từ khóa khác.</p></div>';
+    return;
+  }
+  grid.innerHTML = filteredCards.map((c,i) => `
+    <div class="grid-card" onclick="goToCard(${i})">
+      <span class="gc-emoji">${c.emoji}</span>
+      <div class="gc-word">${c.v} <em>${c.p}</em></div>
+      <div class="gc-def">${c.en}</div>
+      <span class="gc-badge">${c.cat.replace(/^\S+\s/,'')}</span>
+    </div>
+  `).join('');
+}
+
+function goToCard(i) {
+  currentIndex = i;
+  setMode('flashcard');
+  renderFlashcard();
+}
+
+// ════════════════════════════════════════
+// QUIZ MODE
+// ════════════════════════════════════════
+function startQuiz() {
+  if(filteredCards.length < 4) {
+    document.getElementById('quiz-mode').innerHTML = '<div class="empty-state"><div class="e-emoji">⚠️</div><h3>Cần ít nhất 4 thẻ</h3><p>Chọn danh mục có nhiều từ hơn.</p></div>';
+    return;
+  }
+  nextQuiz();
+}
+
+function nextQuiz() {
+  quizAnswered = false;
+  document.getElementById('quiz-feedback').classList.remove('show');
+  document.getElementById('quiz-next').classList.remove('show');
+
+  const idx = Math.floor(Math.random() * filteredCards.length);
+  currentQuizCard = filteredCards[idx];
+  const wrong = filteredCards.filter(c => c !== currentQuizCard);
+  const opts = [currentQuizCard];
+  while(opts.length < 4) {
+    const r = wrong[Math.floor(Math.random() * wrong.length)];
+    if(!opts.includes(r)) opts.push(r);
+  }
+  opts.sort(() => Math.random() - 0.5);
+
+  document.getElementById('q-emoji').textContent = currentQuizCard.emoji;
+  document.getElementById('q-word').innerHTML = `${currentQuizCard.v} <em>${currentQuizCard.p}</em>`;
+  document.getElementById('q-ipa').textContent = currentQuizCard.ipa;
+
+  const letters = ['A','B','C','D'];
+  document.getElementById('quiz-opts').innerHTML = opts.map((c,i) => `
+    <button class="quiz-opt" onclick="answerQuiz(this, '${c === currentQuizCard}', '${c.vi}')">
+      <span class="opt-letter">${letters[i]}</span>${c.en} <small style="display:block;font-size:11px;color:var(--ink3);margin-top:3px;margin-left:32px">${c.vi}</small>
+    </button>
+  `).join('');
+}
+
+function answerQuiz(btn, isCorrect, viDef) {
+  if(quizAnswered) return;
+  quizAnswered = true;
+  quizTotal++;
+  document.getElementById('q-total').textContent = quizTotal;
+  
+  document.querySelectorAll('.quiz-opt').forEach(b => b.classList.add('disabled'));
+  
+  const fb = document.getElementById('quiz-feedback');
+  if(isCorrect === 'true') {
+    quizCorrect++;
+    btn.classList.add('correct');
+    fb.style.background = 'rgba(45,212,191,0.05)';
+    fb.style.borderColor = 'rgba(45,212,191,0.2)';
+    fb.innerHTML = `✅ <strong>Chính xác!</strong> "${currentQuizCard.v} ${currentQuizCard.p}" = ${currentQuizCard.vi}<br><em style="font-size:12px;color:var(--ink3)">${currentQuizCard.ex.replace(/<strong>/g,'').replace(/<\/strong>/g,'')}</em>`;
+    document.getElementById('q-correct').textContent = quizCorrect;
+  } else {
+    quizWrong++;
+    btn.classList.add('wrong');
+    fb.style.background = 'rgba(251,113,133,0.05)';
+    fb.style.borderColor = 'rgba(251,113,133,0.2)';
+    fb.innerHTML = `❌ <strong>Chưa đúng.</strong> "${currentQuizCard.v} ${currentQuizCard.p}" nghĩa là: <strong>${currentQuizCard.vi}</strong><br><em style="font-size:12px;color:var(--ink3)">${currentQuizCard.tip}</em>`;
+    // Highlight correct
+    document.querySelectorAll('.quiz-opt').forEach(b => {
+      if(!b.classList.contains('wrong')) {
+        const txt = b.textContent;
+        if(txt.includes(currentQuizCard.en)) b.classList.add('correct');
+      }
+    });
+    document.getElementById('q-wrong').textContent = quizWrong;
+  }
+  
+  document.getElementById('stat-correct').textContent = `${quizCorrect} / ${quizTotal}`;
+  fb.classList.add('show');
+  document.getElementById('quiz-next').classList.add('show');
+}
+
+// ════════════════════════════════════════
+// MODE SWITCHING
+// ════════════════════════════════════════
+function setMode(m) {
+  mode = m;
+  ['flashcard','grid','quiz'].forEach(x => {
+    document.getElementById(x+'-mode').style.display = x === m ? 'block' : 'none';
+    document.getElementById('btn-mode-'+x.slice(0,x==='flashcard'?9:x==='grid'?4:4)).classList.toggle('active', x === m);
+  });
+  document.getElementById('btn-mode-fc').classList.toggle('active', m === 'flashcard');
+  document.getElementById('btn-mode-grid').classList.toggle('active', m === 'grid');
+  document.getElementById('btn-mode-quiz').classList.toggle('active', m === 'quiz');
+  
+  if(m === 'flashcard') { document.getElementById('flashcard-mode').style.display='block'; renderFlashcard(); }
+  if(m === 'grid') { document.getElementById('grid-mode').style.display='block'; renderGrid(); }
+  if(m === 'quiz') { document.getElementById('quiz-mode').style.display='block'; startQuiz(); }
+}
+
+function shuffle() {
+  filteredCards.sort(() => Math.random() - 0.5);
+  currentIndex = 0;
+  if(mode === 'flashcard') renderFlashcard();
+  else if(mode === 'grid') renderGrid();
+}
+
+// Keyboard
+document.addEventListener('keydown', e => {
+  if(mode !== 'flashcard') return;
+  if(e.key === 'ArrowRight') nextCard();
+  else if(e.key === 'ArrowLeft') prevCard();
+  else if(e.key === ' ') { e.preventDefault(); flipCard(); }
+});
+
+// ════════════════════════════════════════
+init();
+</script>
+
+</body>
+</html>
