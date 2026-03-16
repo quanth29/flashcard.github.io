@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Học 300 Phrasal Verbs Hàng Ngày</title>
+    <!-- Sử dụng Tailwind CSS để làm đẹp giao diện -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Sử dụng FontAwesome cho các biểu tượng -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* CSS tuỳ chỉnh cho hiệu ứng lật thẻ 3D */
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+        .transform-style-3d {
+            transform-style: preserve-3d;
+        }
+        .backface-hidden {
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+        .rotate-y-180 {
+            transform: rotateY(180deg);
+        }
+        .card-transition {
+            transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+        }
+        
+        /* Ngăn chọn văn bản khi click đúp */
+        .no-select {
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        /* Ẩn thanh cuộn nhưng vẫn cuộn được cho phần ví dụ dài */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen font-sans text-slate-800 flex flex-col">
+
+    <!-- Header & Tiến độ -->
+    <header class="bg-white shadow-sm p-4 sticky top-0 z-10">
+        <div class="max-w-md mx-auto flex flex-col gap-3">
+            <h1 class="text-xl font-bold text-center text-indigo-600">
+                <i class="fa-solid fa-graduation-cap mr-2"></i>Phrasal Verbs Flashcards
+            </h1>
+            
+            <div class="w-full bg-slate-200 rounded-full h-2.5">
+                <div id="progress-bar" class="bg-indigo-600 h-2.5 rounded-full transition-all duration-500" style="width: 0%"></div>
+            </div>
+            <div class="flex justify-between text-sm text-slate-500 font-medium">
+                <span id="learned-count">Đã thuộc: 0</span>
+                <span id="total-count">Tổng: 20</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow flex flex-col items-center justify-center p-4 w-full max-w-md mx-auto relative">
+        
+        <!-- Nút Reset (góc trên phải) -->
+        <button onclick="resetProgress()" class="absolute top-2 right-4 text-xs text-slate-400 hover:text-red-500 transition-colors">
+            <i class="fa-solid fa-rotate-right mr-1"></i>Đặt lại
+        </button>
+
+        <!-- Container Thẻ -->
+        <div class="w-full aspect-[3/4] sm:h-96 perspective-1000 mb-8 mt-4 group cursor-pointer no-select" onclick="toggleCard()">
+            <div id="flashcard-inner" class="relative w-full h-full transform-style-3d card-transition shadow-2xl rounded-2xl">
+                
+                <!-- MẶT TRƯỚC (Từ tiếng Anh) -->
+                <div class="absolute inset-0 w-full h-full backface-hidden bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex flex-col items-center justify-center p-6 text-white border-4 border-white">
+                    
+                    <!-- Badge trạng thái Đã thuộc -->
+                    <div id="status-badge" class="absolute top-4 right-4 bg-green-400 text-white text-xs font-bold px-3 py-1 rounded-full shadow-sm opacity-0 transition-opacity">
+                        <i class="fa-solid fa-check mr-1"></i> Đã thuộc
+                    </div>
+
+                    <div class="text-6xl mb-6 shadow-sm rounded-full bg-white/20 w-24 h-24 flex items-center justify-center" id="card-emoji">
+                        🚀
+                    </div>
+                    <h2 id="card-word" class="text-4xl sm:text-5xl font-extrabold mb-2 text-center tracking-tight"></h2>
+                    <p id="card-phonetic" class="text-indigo-200 text-lg font-mono bg-black/20 px-4 py-1 rounded-full"></p>
+                    
+                    <button onclick="playAudio(event)" class="mt-8 bg-white/20 hover:bg-white/30 p-4 rounded-full transition-colors backdrop-blur-sm">
+                        <i class="fa-solid fa-volume-high text-2xl"></i>
+                    </button>
+                    
+                    <p class="absolute bottom-4 text-sm text-indigo-200 opacity-80 animate-pulse">
+                        <i class="fa-solid fa-hand-pointer mr-1"></i> Chạm để lật
+                    </p>
+                </div>
+
+                <!-- MẶT SAU (Nghĩa & Ví dụ) -->
+                <div class="absolute inset-0 w-full h-full backface-hidden rotate-y-180 bg-white rounded-2xl flex flex-col items-center justify-center p-8 border-4 border-indigo-100 hide-scrollbar overflow-y-auto">
+                    
+                    <h3 class="text-sm font-bold text-indigo-400 uppercase tracking-wider mb-2">Ý nghĩa</h3>
+                    <p id="card-meaning" class="text-2xl font-bold text-slate-800 text-center mb-6 leading-tight"></p>
+                    
+                    <div class="w-full h-px bg-slate-100 mb-6"></div>
+                    
+                    <h3 class="text-sm font-bold text-emerald-500 uppercase tracking-wider mb-3">Ví dụ</h3>
+                    <div class="bg-slate-50 p-4 rounded-xl w-full border border-slate-100 text-center">
+                        <p id="card-example-en" class="text-lg font-medium text-slate-800 italic mb-2"></p>
+                        <p id="card-example-vi" class="text-sm text-slate-500"></p>
+                    </div>
+
+                    <p class="mt-8 text-sm text-slate-400">
+                        <i class="fa-solid fa-rotate mr-1"></i> Chạm để quay lại
+                    </p>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Bảng điều khiển (Controls) -->
+        <div class="w-full flex flex-col gap-4">
+            <!-- Nút Hành động Học tập -->
+            <div class="grid grid-cols-2 gap-4">
+                <button onclick="markNeedReview()" class="flex flex-col items-center justify-center py-3 bg-rose-100 text-rose-600 rounded-xl hover:bg-rose-200 transition-colors font-semibold shadow-sm border border-rose-200">
+                    <i class="fa-solid fa-xmark text-xl mb-1"></i> Chưa thuộc
+                </button>
+                <button onclick="markLearned()" class="flex flex-col items-center justify-center py-3 bg-emerald-100 text-emerald-700 rounded-xl hover:bg-emerald-200 transition-colors font-semibold shadow-sm border border-emerald-200">
+                    <i class="fa-solid fa-check text-xl mb-1"></i> Đã thuộc
+                </button>
+            </div>
+
+            <!-- Nút Điều hướng -->
+            <div class="flex justify-between items-center gap-2 mt-2">
+                <button onclick="prevCard()" class="flex-1 bg-white border border-slate-200 py-3 rounded-xl hover:bg-slate-50 transition-colors font-medium text-slate-600 shadow-sm">
+                    <i class="fa-solid fa-arrow-left mr-2"></i> Trước
+                </button>
+                <button onclick="randomCard()" class="w-14 h-14 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors flex items-center justify-center text-indigo-500 shadow-sm shrink-0">
+                    <i class="fa-solid fa-shuffle"></i>
+                </button>
+                <button onclick="nextCard()" class="flex-1 bg-white border border-slate-200 py-3 rounded-xl hover:bg-slate-50 transition-colors font-medium text-slate-600 shadow-sm">
+                    Sau <i class="fa-solid fa-arrow-right ml-2"></i>
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Message Box (thay thế cho alert) -->
+    <div id="message-box" class="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-slate-800 text-white px-6 py-3 rounded-full shadow-xl z-50 transition-all duration-300 opacity-0 translate-y-10 pointer-events-none flex items-center gap-2">
+        <i class="fa-solid fa-circle-info text-indigo-400"></i>
+        <span id="message-text" class="text-sm font-medium"></span>
+    </div>
+
+    <script>
+        // Dữ liệu 20 Phrasal Verbs mẫu (Bạn có thể copy/paste thêm hàng trăm từ vào mảng này)
+        const flashcardsData = [
+            { word: "Break down", phonetic: "/breɪk daʊn/", meaning: "Hỏng hóc / Suy sụp", example: "My car broke down on the way to work.", exampleVi: "Xe của tôi bị hỏng trên đường đi làm.", emoji: "🚗💥" },
+            { word: "Bring up", phonetic: "/brɪŋ ʌp/", meaning: "Nuôi dưỡng / Đề cập", example: "She was brought up by her grandparents.", exampleVi: "Cô ấy được ông bà nuôi nấng.", emoji: "👶🍼" },
+            { word: "Call off", phonetic: "/kɔːl ɒf/", meaning: "Hủy bỏ", example: "They had to call off the match due to rain.", exampleVi: "Họ phải hủy trận đấu vì trời mưa.", emoji: "❌📅" },
+            { word: "Carry out", phonetic: "/ˈkæri aʊt/", meaning: "Tiến hành, thực hiện", example: "The hospital is carrying out tests.", exampleVi: "Bệnh viện đang tiến hành các xét nghiệm.", emoji: "🔬🧪" },
+            { word: "Catch up", phonetic: "/kætʃ ʌp/", meaning: "Bắt kịp, theo kịp", example: "Go on ahead. I'll catch up with you later.", exampleVi: "Đi trước đi. Tôi sẽ bắt kịp bạn sau.", emoji: "🏃‍♂️💨" },
+            { word: "Come across", phonetic: "/kʌm əˈkrɒs/", meaning: "Tình cờ gặp / thấy", example: "I came across my old diary.", exampleVi: "Tôi tình cờ thấy cuốn nhật ký cũ.", emoji: "👀📖" },
+            { word: "Cut down", phonetic: "/kʌt daʊn/", meaning: "Cắt giảm", example: "I'm trying to cut down on sugar.", exampleVi: "Tôi đang cố gắng cắt giảm lượng đường.", emoji: "📉🍬" },
+            { word: "Find out", phonetic: "/faɪnd aʊt/", meaning: "Tìm ra, khám phá ra", example: "I need to find out what time the train leaves.", exampleVi: "Tôi cần tìm hiểu xem mấy giờ tàu chạy.", emoji: "🕵️‍♂️🔍" },
+            { word: "Get along", phonetic: "/gɛt əˈlɒŋ/", meaning: "Hòa thuận", example: "I get along well with my colleagues.", exampleVi: "Tôi hòa thuận với đồng nghiệp của mình.", emoji: "🤝😊" },
+            { word: "Get over", phonetic: "/gɛt ˈəʊvə/", meaning: "Vượt qua (bệnh, buồn)", example: "It took her a long time to get over the flu.", exampleVi: "Cô ấy mất rất nhiều thời gian để khỏi cúm.", emoji: "🚧💪" },
+            { word: "Give up", phonetic: "/gɪv ʌp/", meaning: "Từ bỏ", example: "You shouldn't give up your dreams.", exampleVi: "Bạn không nên từ bỏ ước mơ của mình.", emoji: "🏳️🙅‍♂️" },
+            { word: "Go on", phonetic: "/gəʊ ɒn/", meaning: "Tiếp tục", example: "Please go on, I'm listening.", exampleVi: "Cứ tiếp tục đi, tôi đang nghe đây.", emoji: "🚦➡️" },
+            { word: "Hold on", phonetic: "/həʊld ɒn/", meaning: "Đợi một chút / Giữ máy", example: "Hold on a minute, I'll go get him.", exampleVi: "Đợi một chút, tôi sẽ đi gọi anh ấy.", emoji: "✋⏳" },
+            { word: "Look after", phonetic: "/lʊk ˈɑːftə/", meaning: "Chăm sóc", example: "Can you look after my dog?", exampleVi: "Bạn có thể chăm sóc con chó của tôi không?", emoji: "🪴🐕" },
+            { word: "Look forward to", phonetic: "/lʊk ˈfɔːwəd tuː/", meaning: "Mong đợi", example: "I'm looking forward to seeing you.", exampleVi: "Tôi rất mong được gặp bạn.", emoji: "🔭🤩" },
+            { word: "Make up", phonetic: "/meɪk ʌp/", meaning: "Bịa chuyện / Làm hòa", example: "They argued but later made up.", exampleVi: "Họ đã cãi nhau nhưng sau đó đã làm hòa.", emoji: "🤥🤝" },
+            { word: "Put off", phonetic: "/pʊt ɒf/", meaning: "Trì hoãn", example: "We've had to put off the trip.", exampleVi: "Chúng tôi đã phải trì hoãn chuyến đi.", emoji: "⏰⏭️" },
+            { word: "Set up", phonetic: "/sɛt ʌp/", meaning: "Thiết lập, thành lập", example: "She plans to set up her own business.", exampleVi: "Cô ấy dự định thành lập công ty riêng.", emoji: "🏢🔧" },
+            { word: "Take off", phonetic: "/teɪk ɒf/", meaning: "Cất cánh / Cởi ra", example: "The plane will take off in 20 minutes.", exampleVi: "Máy bay sẽ cất cánh trong 20 phút nữa.", emoji: "🛫👕" },
+            { word: "Turn out", phonetic: "/tɜːn aʊt/", meaning: "Hóa ra là", example: "It turned out that we had met before.", exampleVi: "Hóa ra là chúng tôi đã từng gặp nhau trước đây.", emoji: "🎁😲" }
+            // Thêm các từ khác vào đây...
+        ];
+
+        // Biến trạng thái
+        let currentIndex = 0;
+        let isFlipped = false;
+        let learnedWords = new Set(); // Lưu index các từ đã thuộc
+
+        // DOM Elements
+        const cardInner = document.getElementById('flashcard-inner');
+        const wordEl = document.getElementById('card-word');
+        const phoneticEl = document.getElementById('card-phonetic');
+        const meaningEl = document.getElementById('card-meaning');
+        const exampleEnEl = document.getElementById('card-example-en');
+        const exampleViEl = document.getElementById('card-example-vi');
+        const emojiEl = document.getElementById('card-emoji');
+        const statusBadge = document.getElementById('status-badge');
+        const progressBar = document.getElementById('progress-bar');
+        const learnedCountEl = document.getElementById('learned-count');
+        const totalCountEl = document.getElementById('total-count');
+
+        // Khởi tạo ứng dụng
+        function initApp() {
+            // Tải dữ liệu đã lưu từ LocalStorage
+            const savedData = localStorage.getItem('learnedPhrasalVerbs');
+            if (savedData) {
+                learnedWords = new Set(JSON.parse(savedData));
+            }
+
+            document.getElementById('total-count').textContent = `Tổng: ${flashcardsData.length}`;
+            updateProgress();
+            renderCard(currentIndex);
+        }
+
+        // Cập nhật nội dung thẻ
+        function renderCard(index) {
+            const card = flashcardsData[index];
+            wordEl.textContent = card.word;
+            phoneticEl.textContent = card.phonetic;
+            meaningEl.textContent = card.meaning;
+            exampleEnEl.textContent = `"${card.example}"`;
+            exampleViEl.textContent = card.exampleVi;
+            emojiEl.textContent = card.emoji;
+
+            // Hiển thị badge nếu đã thuộc
+            if (learnedWords.has(index)) {
+                statusBadge.classList.remove('opacity-0');
+            } else {
+                statusBadge.classList.add('opacity-0');
+            }
+        }
+
+        // Lật thẻ
+        function toggleCard() {
+            isFlipped = !isFlipped;
+            if (isFlipped) {
+                cardInner.classList.add('rotate-y-180');
+            } else {
+                cardInner.classList.remove('rotate-y-180');
+            }
+        }
+
+        // Đảm bảo thẻ luôn ở mặt trước khi chuyển từ
+        function resetCardFlip() {
+            isFlipped = false;
+            cardInner.classList.remove('rotate-y-180');
+        }
+
+        // Chuyển từ tiếp theo
+        function nextCard() {
+            resetCardFlip();
+            setTimeout(() => {
+                currentIndex = (currentIndex + 1) % flashcardsData.length;
+                renderCard(currentIndex);
+            }, isFlipped ? 300 : 0); // Đợi lật xong mới đổi chữ nếu đang lật
+        }
+
+        // Chuyển từ trước đó
+        function prevCard() {
+            resetCardFlip();
+            setTimeout(() => {
+                currentIndex = (currentIndex - 1 + flashcardsData.length) % flashcardsData.length;
+                renderCard(currentIndex);
+            }, isFlipped ? 300 : 0);
+        }
+
+        // Chọn từ ngẫu nhiên
+        function randomCard() {
+            resetCardFlip();
+            setTimeout(() => {
+                let newIndex = currentIndex;
+                while (newIndex === currentIndex && flashcardsData.length > 1) {
+                    newIndex = Math.floor(Math.random() * flashcardsData.length);
+                }
+                currentIndex = newIndex;
+                renderCard(currentIndex);
+            }, isFlipped ? 300 : 0);
+        }
+
+        // Phát âm tiếng Anh
+        function playAudio(event) {
+            event.stopPropagation(); // Ngăn sự kiện click lật thẻ
+            
+            const word = flashcardsData[currentIndex].word;
+            if ('speechSynthesis' in window) {
+                // Hủy các phát âm đang chờ
+                window.speechSynthesis.cancel();
+                
+                const utterance = new SpeechSynthesisUtterance(word);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.9; // Đọc chậm một chút để dễ nghe
+                window.speechSynthesis.speak(utterance);
+            } else {
+                showMessage('Trình duyệt của bạn không hỗ trợ tính năng phát âm.');
+            }
+        }
+
+        // Đánh dấu đã thuộc
+        function markLearned() {
+            learnedWords.add(currentIndex);
+            saveProgress();
+            updateProgress();
+            statusBadge.classList.remove('opacity-0');
+            showMessage('Đã ghi nhớ từ này! Đang chuyển từ tiếp theo...', 'success');
+            
+            // Tự động chuyển thẻ sau khi học
+            setTimeout(() => {
+                nextCard();
+            }, 800);
+        }
+
+        // Đánh dấu chưa thuộc
+        function markNeedReview() {
+            learnedWords.delete(currentIndex);
+            saveProgress();
+            updateProgress();
+            statusBadge.classList.add('opacity-0');
+            showMessage('Đã đánh dấu cần ôn tập lại.');
+        }
+
+        // Cập nhật thanh tiến trình
+        function updateProgress() {
+            const count = learnedWords.size;
+            const total = flashcardsData.length;
+            const percentage = (count / total) * 100;
+            
+            progressBar.style.width = `${percentage}%`;
+            learnedCountEl.textContent = `Đã thuộc: ${count}`;
+        }
+
+        // Lưu vào LocalStorage
+        function saveProgress() {
+            localStorage.setItem('learnedPhrasalVerbs', JSON.stringify([...learnedWords]));
+        }
+
+        // Xóa dữ liệu học tập
+        function resetProgress() {
+            learnedWords.clear();
+            saveProgress();
+            updateProgress();
+            statusBadge.classList.add('opacity-0');
+            showMessage('Đã đặt lại toàn bộ tiến độ học tập!');
+        }
+
+        // Hiển thị thông báo (Toast message)
+        let messageTimeout;
+        function showMessage(text, type = 'info') {
+            const msgBox = document.getElementById('message-box');
+            const msgText = document.getElementById('message-text');
+            const icon = msgBox.querySelector('i');
+            
+            msgText.textContent = text;
+            
+            if (type === 'success') {
+                icon.className = 'fa-solid fa-circle-check text-emerald-400';
+            } else {
+                icon.className = 'fa-solid fa-circle-info text-indigo-400';
+            }
+
+            msgBox.classList.remove('opacity-0', 'translate-y-10');
+            
+            clearTimeout(messageTimeout);
+            messageTimeout = setTimeout(() => {
+                msgBox.classList.add('opacity-0', 'translate-y-10');
+            }, 2500);
+        }
+
+        // Hỗ trợ dùng phím mũi tên để chuyển thẻ
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') nextCard();
+            else if (e.key === 'ArrowLeft') prevCard();
+            else if (e.key === ' ' || e.key === 'Enter') {
+                e.preventDefault();
+                toggleCard();
+            }
+        });
+
+        // Bắt đầu
+        window.onload = initApp;
+    </script>
+</body>
+</html>
+
